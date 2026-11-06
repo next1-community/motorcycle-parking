@@ -9,7 +9,7 @@ create table next1_test.events (
  check(phase in ('registration','locked','drawn','selecting','completed')),
  revision integer not null default 0, current_rank integer not null default 1,
  pending_spot integer check(pending_spot between 4 and 62), pending_mode text not null default 'selected' check(pending_mode in ('selected','delegated')),
- rules_version text not null default '修正版2＋本次確認規則／測試v1',
+ rules_version text not null default '2027年度管理辦法及登記須知',
  rules_text text not null,
  draw_at timestamptz, created_at timestamptz not null default now()
 );
@@ -43,8 +43,16 @@ select b||'-'||f||'F', case when b='225' and f>=8 then 2 else 1 end
 from unnest(array['215','217','219','221','223','225','225-1']) b
 cross join generate_series(1,15) f
 where not (b='225' and f<3) and not (b='225-1' and (f<3 or f>7));
-insert into next1_test.events(id,title,rules_text) values ('test-2027','2027 年度機車位抽籤｜測試活動',
-'一、每戶一個抽籤權益；225號8F至15F每戶最多兩個權利名額，所有權利名額同池抽順位，每次輪到各選一格。僅接受戶別清單內登記，不另做資格審核。\n二、每車位可停一部機車（含重機）或兩台自行車。\n三、管委會公開抽籤，以戶別識別。未到者由管理委員或總幹事依車位編號安排。\n四、每年1月區權會抽籤，使用期間為當年度4月1日至次年度3月31日。\n五、季繳費用，逾期未繳將釋出；選位後至管理室繳交車籍資料與費用。\n六、1至3號不開放，4至62號每年度重新開放。\n七、餘位及收回車位依管理室或電話登記時間先登記先選位；2027年度不開放超過原有權利名額的額外車位登記或第二格候補；225號8F至15F的兩個固有權益名額不受影響。\n八、車位為專屬使用，不得佔用他戶車位；不再需要時由管委會收回。非本社區住戶不得停放。\n本頁為流程確認測試版，不構成正式登記。完整原辦法請開啟PDF；名額與開放車位依本次已確認規則呈現。');
+insert into next1_test.events(id,title,rules_text) values ('test-2027','2027 年度機車位抽籤',
+'一、每戶一個抽籤權益；225號8F至15F每戶最多兩個權利名額。兩個名額一起抽，每個名額取得獨立順位，每次輪到各選一格。
+二、僅限戶別清單內登記，不另做資格審核。每車位可停一部機車（含重機）或兩台自行車。
+三、管委會公開抽籤，以戶別識別。未到者由管理委員或總幹事依車位編號安排。
+四、每年1月區權會抽籤；車位使用期間為當年度4月1日至次年度3月31日。
+五、季繳費用，逾期未繳將釋出。選位後至管理室繳交車籍資料及費用。
+六、1～3號不開放，4～62號每年度重新開放。
+七、2027年度不開放超過原有權利名額的額外車位登記或第二格候補。225號8F～15F固有的兩個抽籤權益不受影響。
+八、車位專屬使用，不得佔用他戶車位；不再需要時交管委會收回。非本社區住戶不得停放。
+請一併閱讀完整《機車位抽籤、使用、繳費管理辦法》。本年度名額及開放車位依本頁登記須知辦理。');
 -- Sample entries demonstrate one- and two-lot households; not real registrations.
 insert into next1_test.registrations(event_id,household,quantity,token_hash,consent_version,sample)
 select 'test-2027',h,case when h like '225-%' then 2 else 1 end,
