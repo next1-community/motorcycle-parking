@@ -41,3 +41,6 @@
 .parking-tile.on-diagram.allocated,.parking-tile.on-diagram.unavailable{background:transparent;border:0;color:#3e4b50}
 .parking-tile.on-diagram.proposed{background:transparent;border:0;box-shadow:none}
 @media(min-width:851px){.view-display .parking-tile.on-diagram.unavailable{border:0}.view-display .parking-tile.on-diagram.proposed{border:0}}
+
+.admin-tabs{display:flex;gap:10px;margin:0 0 24px;border-bottom:1px solid var(--line);padding-bottom:16px}.history-filters{display:flex;flex-wrap:wrap;align-items:end;gap:12px;margin:22px 0}.history-filters .field{flex:1;min-width:150px;margin:0}.history-filters button{min-height:46px}.history-notice{background:#f4f5df;border:1px solid #d8ddb8;border-radius:8px;padding:12px}.history-source{background:#f2f6f3;border-radius:9px;padding:14px;color:#49635a;font-size:13px}.history-source p{margin:6px 0 0}.history-panel h2{margin-bottom:4px}.history-panel .split p{margin:0}.history-panel tbody td{white-space:nowrap}
+.history-panel tr.history-unavailable{background:#e5e8e9;color:#526066}
