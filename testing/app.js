@@ -37,7 +37,7 @@ function footer(){if(route()==='register')return `<footer class="resident-footer
 function stats(){const n=state.registrations.reduce((a,r)=>a+r.quantity,0),used=state.lots.filter(l=>l.spot).length;return `<div class="stats"><div class="stat"><small>已登記戶別</small><strong>${state.registrations.length}<small> 戶</small></strong></div><div class="stat"><small>抽籤名額</small><strong>${n}<small> 個</small></strong></div><div class="stat"><small>已分配車位</small><strong>${used}<small> 格</small></strong></div><div class="stat green"><small>尚可選擇</small><strong>${59-used}<small> 格</small></strong></div></div>`;}
 function phaseFlow(){
  const steps=[['registration','確認登記名單'],['locked','鎖定名單'],['drawn','公布抽籤順位'],['selecting','依序選位'],['completed','確認分配結果']];
- const action={registration:['lock','截止登記並鎖定名單'],locked:['draw','公開抽出全部順位'],drawn:['start','開始依序選位']}[state.event.phase];
+ const action={registration:['lock','截止登記並鎖定名單'],locked:['draw','抽出選位順位'],drawn:['start','開始依序選位']}[state.event.phase];
  const current=steps.findIndex(([key])=>key===state.event.phase);
  return `<section class="admin-progress" aria-label="抽籤作業進度"><div class="progress-title"><strong>抽籤作業進度</strong><small>第 ${current+1} 步，共 5 步</small></div><ol>${steps.map(([key,label],i)=>`<li class="${i<current?'done':i===current?'active':'future'}" ${i===current?'aria-current="step"':''}><i>${i<current?'✓':i+1}</i><b>${label}</b>${i===current?'<small>目前階段</small>':''}</li>`).join('')}</ol>${action?`<div class="flow-action"><span>下一步：${steps[current+1][1]}</span><button class="primary" data-action="${action[0]}">${action[1]} →</button></div>`:''}</section>`;
 }
