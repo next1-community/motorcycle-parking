@@ -1,0 +1,12 @@
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+export function registrationMatrix(state){
+ const households=state.households||[],valid=new Set(households.map(h=>h.id)),registered=new Map(state.registrations.map(r=>[r.household,r.quantity]));
+ const buildings=[...new Set(households.map(h=>h.id.replace(/-\d+F$/,'')))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+ const floors=households.map(h=>Number(h.id.match(/-(\d+)F$/)?.[1]||0));
+ const maxFloor=Math.max(0,...floors);
+ return {buildings,rows:Array.from({length:maxFloor},(_,i)=>{const floor=maxFloor-i;return {floor,cells:buildings.map(building=>{const household=`${building}-${floor}F`;return {household,exists:valid.has(household),quantity:registered.get(household)||0};})};})};
+}
+export function renderRegistrationBoard(state){
+ const {buildings,rows}=registrationMatrix(state),count=state.registrations.length,total=state.registrations.reduce((n,r)=>n+r.quantity,0),locked=state.event.phase==='locked';
+ return `<section class="registration-board"><div class="registration-summary"><div><b>${count}</b><span>戶已登記</span></div><div><b>${total}</b><span>個抽籤名額</span></div><div><b>59</b><span>格開放車位</span></div><p>${locked?'名單已鎖定，請核對各戶申請名額。':'請依門牌與樓層，核對登記狀態及申請名額。'}</p></div><div class="registration-board-head"><h2>住戶登記一覽</h2><div class="registration-key"><span><i class="registered"></i>已登記</span><span><i></i>未登記</span><span><i class="absent"></i>無此戶別</span></div></div><div class="registration-matrix-scroll" tabindex="0" aria-label="門牌與樓層登記一覽，可橫向捲動"><table class="registration-matrix"><caption class="sr-only">住戶登記名單：門牌為欄、樓層為列，每格顯示申請名額</caption><thead><tr><th scope="col">樓層</th>${buildings.map(b=>`<th scope="col">${esc(b)} 號</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr><th scope="row">${row.floor}F</th>${row.cells.map(c=>`<td class="${!c.exists?'absent':c.quantity?'registered':'unregistered'}" ${c.exists?`data-household="${esc(c.household)}"`:''} aria-label="${esc(c.household)} ${!c.exists?'無此戶別':c.quantity?'已登記 '+c.quantity+' 個名額':'未登記'}">${!c.exists?'<span aria-hidden="true">—</span>':c.quantity?`<b>${c.quantity}</b><span> 個名額</span>`:'<span>未登記</span>'}</td>`).join('')}</tr>`).join('')}</tbody></table></div><p class="registration-board-note">各格數字為申請名額；同戶兩個名額將各自抽出選位順位。${locked?'主持人確認後即可開始公開抽籤。':'登記狀態依目前已保存的資料顯示。'}</p></section>`;
+}
