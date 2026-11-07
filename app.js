@@ -1,5 +1,5 @@
-import {renderPublicFlow} from './public-flow.mjs?v=20261107-gray-flow';
-import {renderRegistrationBoard} from './roster.mjs';
+import {renderPublicFlow} from './public-flow.mjs?v=20261107-compact-roster';
+import {renderRegistrationBoard} from './roster.mjs?v=20261107-compact-roster';
 import {filterArchive,demoArchive,renderHistory} from './history.mjs';
 import {config} from './config.js';
 import {renderMap} from './map.mjs?v=20261107-fit-map';
