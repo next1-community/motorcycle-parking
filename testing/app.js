@@ -1,5 +1,5 @@
 import {renderPublicFlow} from '../public-flow.mjs?v=20261107-compact-roster';
-import {renderRegistrationBoard} from './roster.mjs?v=admin-time-1';
+import {renderRegistrationBoard} from './roster.mjs?v=admin-design-2';
 import {filterArchive,demoArchive,renderHistory} from '../history.mjs?v=20261107-admin-1';
 const testing = location.pathname.replace(/\/$/, '').endsWith('/testing');
 const {config} = await import('./config.js');

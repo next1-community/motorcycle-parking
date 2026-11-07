@@ -75,3 +75,27 @@ body{font-family:Arial,"Microsoft JhengHei","PingFang TC",sans-serif}button,inpu
 .view-admin header{height:auto;min-height:88px;gap:20px;flex-wrap:wrap;padding-top:16px;padding-bottom:16px}.view-admin header nav{display:flex;flex-wrap:wrap;gap:8px}.view-admin header nav a{white-space:nowrap;padding:9px 12px}.annual-lookup h2{margin-top:0}.annual-lookup .lookup-search{margin-top:16px}.annual-lookup .lookup-search label{font-weight:700}.annual-lookup .result-card h3{margin:0}.annual-lookup .result-card p:last-child{margin-bottom:0}@media(max-width:700px){.view-admin header nav{width:100%;display:grid;grid-template-columns:1fr 1fr}.view-admin header nav a{text-align:center;font-size:13px}.annual-lookup .lookup-search{flex-wrap:wrap}.annual-lookup .lookup-search input{min-width:160px;flex:1}}
 
 .view-admin .registration-time{display:block;font:normal 12px/1.45 Arial,sans-serif;margin-top:4px;color:#263a42}.view-admin .registration-matrix{min-width:850px}
+
+.view-admin{background:#eff3f8;color:#182f48}
+.view-admin main{max-width:1360px}
+.view-admin .pagehead{background:#193952;color:white;border-radius:16px;padding:24px 28px;border-left:7px solid #49c0ae}
+.view-admin .pagehead :is(h1,p,.eyebrow){color:inherit}
+.view-admin .card{border-color:#d1dce6;box-shadow:0 3px 14px #2239550b}
+.view-admin .stat{border-top:4px solid #4284ad;color:#24415c}
+.view-admin .stat:nth-child(2){border-top-color:#9471ad}
+.view-admin .stat:nth-child(3){border-top-color:#ba821d}
+.view-admin .stat.green,.view-admin button.primary{background:#11645d;color:white}
+.view-admin .phaseflow .now{background:#17496b;color:white}
+.view-admin .registration-board{border:0;padding:0;border-radius:0}
+.view-admin .registration-topline{margin:12px 0}
+.view-admin .registration-topline h2{display:none}
+.view-admin .registration-matrix{min-width:610px;width:100%}
+.view-admin .registration-matrix th:first-child{width:48px}
+.view-admin .registration-matrix thead th{background:#224460;white-space:normal}
+.view-admin .registration-matrix tbody th{background:#edf2f7;color:#304861}
+.view-admin .registration-matrix td.registered{background:#e4f4f1;color:#16594f;box-shadow:none}
+.view-admin .registration-matrix td.double{background:#fff0c7;color:#704600;font-weight:700;box-shadow:inset 0 -3px #c38a22}
+.view-admin .registration-matrix td.unregistered{color:#546477}
+.view-admin .registration-matrix td.absent{background:repeating-linear-gradient(135deg,#edf0f4 0 4px,#e2e7ec 4px 5px);color:#64748b}
+.view-admin .registration-time{white-space:normal}
+@media(max-width:700px){.view-admin .pagehead{padding:17px}.view-admin .registration-topline{flex-wrap:wrap}}
