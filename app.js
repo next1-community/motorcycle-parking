@@ -1,4 +1,4 @@
-import {renderPublicFlow} from './public-flow.mjs';
+import {renderPublicFlow} from './public-flow.mjs?v=20261107-gray-flow';
 import {renderRegistrationBoard} from './roster.mjs';
 import {filterArchive,demoArchive,renderHistory} from './history.mjs';
 import {config} from './config.js';
