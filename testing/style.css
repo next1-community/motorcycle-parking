@@ -111,3 +111,10 @@ body{font-family:Arial,"Microsoft JhengHei","PingFang TC",sans-serif}button,inpu
 .draw-board .selection-cue{margin:0 0 .8rem;padding:.55em .8em;border-left:5px solid #14558a;background:#eef5fb;color:#152f4d;line-height:1.45}
 
 .display-rank .nextlist li { padding-block: .4em; }
+
+.parking-counts { display:flex; flex-wrap:wrap; gap:.6rem; margin:0 0 1rem; }
+.parking-counts > div { display:flex; align-items:baseline; gap:.8rem; padding:.35rem .85rem; border-radius:.45rem; background:#edf1f5; color:#25394e; }
+.parking-counts > div:first-child { background:#094d8b; color:white; }
+.parking-counts dt { font-weight:700; }
+.parking-counts dd { margin:0; }
+.parking-counts strong { font-size:1.5em; font-variant-numeric:tabular-nums; }
