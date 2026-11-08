@@ -107,3 +107,5 @@ body{font-family:Arial,"Microsoft JhengHei","PingFang TC",sans-serif}button,inpu
 .draw-reveal{min-height:55vh;display:grid;place-content:center;justify-items:center;background:#123b61;color:white;border-radius:1rem}.draw-reveal h1{color:white;font-size:clamp(2rem,5vw,5rem)}.draw-balls{display:flex;gap:1rem;padding:2rem}.draw-balls i{width:3rem;height:3rem;border-radius:50%;background:#ffda48;animation:draw-bounce .8s ease-in-out infinite alternate}.draw-balls i:nth-child(2){animation-delay:-.3s}.draw-balls i:nth-child(3){animation-delay:-.6s}@keyframes draw-bounce{to{transform:translateY(-1.5rem)}}@media(prefers-reduced-motion:reduce){.draw-balls i{animation:none}}
 
 .table-wrap.paged-ranks{max-height:none}.rank-pager{display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;padding-top:1rem}.rank-pager select{width:auto;display:inline-block}.rank-pager span{font-size:.9rem}
+
+.draw-board .selection-cue{margin:0 0 .8rem;padding:.55em .8em;border-left:5px solid #14558a;background:#eef5fb;color:#152f4d;line-height:1.45}
