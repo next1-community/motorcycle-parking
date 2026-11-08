@@ -118,3 +118,14 @@ body{font-family:Arial,"Microsoft JhengHei","PingFang TC",sans-serif}button,inpu
 .parking-counts dt { font-weight:700; }
 .parking-counts dd { margin:0; }
 .parking-counts strong { font-size:1.5em; font-variant-numeric:tabular-nums; }
+
+.admin-stage .success {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.admin-stage .success > :is(h3, p, .pending) {
+  flex-basis: 100%;
+  margin-block: 0;
+}
