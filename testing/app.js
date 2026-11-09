@@ -88,20 +88,25 @@ function homeView(){
     completed:['選位完成','查看選位結果']
   };
   const [status,action]=phases[state.event.phase] || ['作業進行中','開啟本年度作業'];
+  const upcoming=['汽車位管理','社區資產管理','修繕紀錄'];
   return `<style>
-  .community-home{max-width:1060px;margin:3vh auto;color:#17374b}
-  .community-home .home-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
-  .home-title h1{margin:0;font-size:clamp(26px,4vw,46px)}
-  .home-task{background:#103b50 linear-gradient(90deg,rgba(9,44,58,.98) 0%,rgba(9,44,58,.92) 34%,rgba(9,44,58,.15) 80%);background-image:linear-gradient(90deg,rgba(9,44,58,.98),rgba(9,44,58,.91) 38%,rgba(9,44,58,.12) 82%),url("testing/community-lobby.jpg");background-size:cover;background-position:center 48%;color:white;border-radius:20px;padding:clamp(24px,4vw,48px)}
-  .home-task h2{color:white;font-size:clamp(25px,3vw,38px);margin:14px 0}
-  .home-task p{color:#e1f5ed;margin:0 0 24px}
-  .home-task a,.home-links a{display:inline-block;text-decoration:none;font-weight:700}
-  .home-task a{background:white;color:#124c51;padding:12px 20px;border-radius:8px}
-  .home-links{background:white;border:1px solid #cedbdc;border-radius:16px;padding:22px 26px;margin-top:24px}
-  .home-links h2{margin:0 0 12px}.home-links a{padding:9px 0;margin-right:28px;color:#116366}
-  </style><section class="community-home"><div class="home-title"><h1>NEXT1 社區管理中心</h1><button id="logout">登出</button></div>
-  <section class="home-task"><strong>目前作業</strong><h2>2027 年度機車位抽籤</h2><p>${status}${state.event.phase==='selecting'?' · 目前第 '+Number(state.event.current_rank)+' 順位':''}</p><a href="#/admin">${action} →</a></section>
-  <section class="home-links"><h2>機車位管理</h2><a href="#/admin">本年度抽籤作業 →</a><a href="#/admin?view=history">歷年中籤紀錄 →</a></section></section>`;
+  .community-home{max-width:1100px;margin:20px auto;color:#17374b}
+  .home-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:clamp(24px,4vw,52px);border-radius:18px;background:linear-gradient(90deg,#103441 5%,rgba(16,52,65,.75) 55%,transparent),url("testing/community-lobby.jpg") center 48%/cover}
+  .home-banner h1{color:white;margin:0;font-size:clamp(24px,4vw,42px)}
+  .home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:16px}
+  .home-module{padding:22px;border:1px solid #c4d7d3;border-radius:14px;background:white}
+  .home-module h3{font-size:1.35rem;margin:0}
+  .home-module p{margin:10px 0;color:#274a50}
+  .home-module .home-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:16px}
+  .home-actions a{font-weight:700;color:#126157}.home-actions a:first-child{padding:9px 16px;background:#126157;color:white;border-radius:8px;text-decoration:none}
+  .home-upcoming{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#eef1f2;color:#535e65;border-color:#dce1e3}
+  .home-upcoming small{background:#dfe4e6;padding:4px 9px;border-radius:6px;white-space:nowrap}
+  </style><section class="community-home"><div class="home-banner"><h1>NEXT1 社區管理中心</h1><button id="logout">登出</button></div>
+  <h2>請選擇要辦理的業務</h2><div class="home-grid">
+  <section class="home-module"><h3>機車位管理</h3><p>2027 年度機車位抽籤</p><p>${status}${state.event.phase==='selecting'?' · 目前第 '+Number(state.event.current_rank)+' 順位':''}</p>
+  <div class="home-actions"><a href="#/admin">${action} →</a><a href="#/admin?view=history">歷年中籤紀錄</a></div></section>
+  ${upcoming.map(name=>`<section class="home-module home-upcoming"><h3>${name}</h3><small>即將推出</small></section>`).join('')}
+  </div></section>`;
 }
 function adminView(){if(mode==='cloud'&&!state.is_admin)return loginView();if(adminSection==='history')return `<div class="pagehead"><div><h1>歷年中籤紀錄</h1></div>${mode==='cloud'?'<button class="quiet small" id="logout">登出</button>':''}</div>${renderHistory({data:historyData,year:historyYear,household:historyHousehold,spot:historySpot,loading:historyLoading,error:historyError,demo:mode==='demo'})}`;const e=state.event,l=current(),isSelecting=e.phase==='selecting';return `<div class="pagehead"><div><div class="eyebrow">COMMUNITY MANAGEMENT</div><h1>本年度抽籤作業</h1><p class="muted">名單確認、公開抽籤、依序選位與本年度結果查詢。</p></div><div>${mode==='cloud'?'<button class="quiet small" id="logout">登出</button>':''}</div></div>${phaseFlow()}${isSelecting?`<div class="admin-grid"><div class="card admin-stage"><div class="rank-label">現在輪到 · CURRENT TURN</div><div class="rank-number">${String(e.current_rank).padStart(2,'0')}</div><div class="house">${l?.household||'—'}</div><span class="pill">名額 ${l?.slot||1}</span><p class="note">請住戶口述車位號碼，輸入後於投放畫面核對。</p>${l?.status==='waiting'?`<div class="spot-input" style="margin-top:20px"><input id="spotNumber" type="number" min="4" max="62" placeholder="車位號碼" aria-label="車位號碼"><button class="primary" id="propose">顯示待確認</button></div>${e.pending_spot?`<div class="pending"><small>${e.pending_mode==='delegated'?'未到代排':'住戶選擇'} · 請覆誦並確認</small><b>${l.household} → ${e.pending_spot} 號</b><div class="toolbar"><button class="primary" data-action="confirm">確認選位</button><button data-action="clear">重新選擇</button></div></div>`:''}<div class="toolbar"><button class="small" id="delegate">未到場，建議最小可用號碼</button><button class="small danger" data-action="waive">記錄本名額放棄</button></div>`:`<div class="success"><h3>${l?.spot?l.spot+' 號車位已選定':statusName[l?.status]||''}</h3>${changeControls(e,l)}<button class="primary" ${e.pending_spot || editingRank===l?.rank?'disabled':''} data-action="next">${testing&&!available(state).length?'完成選位並公布備取':'叫下一位 →'}</button></div>`}<h3 style="margin-top:25px">接下來請準備</h3>${nextList()}</div><div class="card">${mapHTML(l?.status==='waiting' || editingRank===l?.rank || !!e.pending_spot)}</div></div>`:''}${stats()}<div class="toolbar"><button id="showAnnualLookup">查詢戶別</button><button id="exportResults">匯出目前清冊</button>${mode==='demo'?'<button id="resetDemo" class="danger">重設演練進度</button>':''}<span class="note" id="displayHealth">${displayConnected?Date.now()-lastAck<5000?'● 投放畫面已連接':'投放畫面回應中斷，請先檢查':'尚未開啟會議投放畫面'}</span></div>${annualLookup()}<div class="card" style="margin-top:23px"><div class="split"><h2>${drawer==='lots'?'抽籤順位與選位結果':'住戶登記名單'}</h2><button class="small" id="toggleTable">${drawer==='lots'?'查看登記':'查看順位'}</button></div>${drawer==='lots'?table(drawer):renderRegistrationBoard(state,{admin:true})}</div>`;}
 function displayView(){
