@@ -129,3 +129,11 @@ body{font-family:Arial,"Microsoft JhengHei","PingFang TC",sans-serif}button,inpu
   flex-basis: 100%;
   margin-block: 0;
 }
+
+.final-rank-columns {display:grid;gap:16px;align-items:start}
+@media(min-width:900px){.final-rank-columns{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.final-rank-columns .table-wrap{max-height:none;overflow:auto}
+.final-rank-columns table{width:100%;min-width:0}
+.final-rank-columns :is(th,td){padding:7px 6px;white-space:nowrap}
+
+.view-display .draw-board nav.rank-pager{display:flex!important;position:static}
