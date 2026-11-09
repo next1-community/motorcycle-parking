@@ -1,4 +1,4 @@
-import {mountCalendar} from './calendar.js';
+import {mountCalendar} from './calendar.js?v=edit-1';
 import {startReveal, revealPage} from './rank-reveal.js?v=10';
 import {renderPublicFlow} from '../public-flow.mjs?v=20261107-compact-roster';
 import {renderRegistrationBoard} from './roster.mjs?v=admin-design-2';
@@ -155,16 +155,20 @@ async function loadHistory(){const request=++historyRequest;historyLoading=true;
 function exportHistory(){const rows=filterArchive(historyData,{year:historyYear,household:historyHousehold,spot:historySpot});const csv=[['年度','車位編號','戶別','抽籤順位','紀錄狀態'],...rows.map(r=>[r.year,r.spot,r.household||'',r.draw_rank||'',r.status==='assigned'?'已分配':r.status==='unavailable'?'不開放':'原稿未登載戶別'])].map(row=>row.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\r\n');const url=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download=`NEXT1_歷年中籤_${historyYear||'全部年度'}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function changeMode(m){clearHistory();mode=m;localStorage.setItem(modeKey,m);state=null;receipt=null;load();}
 function fitParkingMap(){const shell=$('.map-shell'),diagram=$('.parking-diagram');if(!shell||!diagram)return;const maxHeight=Math.min(window.innerHeight*.62,640),width=Math.max(1,Math.min(shell.clientWidth-2,(maxHeight-4)*1043/960));diagram.style.setProperty('--map-fit-width',width+'px');diagram.style.setProperty('--map-number-size',(width/1043*16)+'px');}
-async function calendarRequest(query, entry) {
+async function calendarRequest(query, entry, method=entry?'POST':'GET') {
   await ensureSession();
   if (!session?.access_token) throw Error('請重新登入');
   const headers = {apikey:config.key, Authorization:'Bearer '+session.access_token};
-  if (entry) Object.assign(headers,{'Content-Type':'application/json',Prefer:'resolution=ignore-duplicates'});
+  if (entry) headers['Content-Type']='application/json';
+  if(method==='POST') headers.Prefer='resolution=ignore-duplicates';
+  const modifying=method==='PATCH'||method==='DELETE';
+  if(modifying) headers.Prefer='return=representation';
   const response = await fetch(config.url+'/rest/v1/community_calendar_entries'+query,{
-    method:entry?'POST':'GET',headers,body:entry?JSON.stringify(entry):undefined
+    method,headers,body:entry?JSON.stringify(entry):undefined
   });
   if (!response.ok) throw Error('記事服務無法使用');
-  return entry ? null : response.json();
+  if(modifying && (await response.json()).length!==1) throw Error('記事已異動');
+  return method==='GET' ? response.json() : null;
 }
 function bind(){const calendar=document.querySelector('.community-calendar');if(calendar)mountCalendar(calendar,calendarRequest);mapResizeObserver?.disconnect();if($('.map-shell')){fitParkingMap();mapResizeObserver=new ResizeObserver(fitParkingMap);mapResizeObserver.observe($('.map-shell'));}const on=(id,event,fn)=>{const el=$('#'+id);if(el)el.addEventListener(event,fn);};on('homeTop','click',()=>{window.scrollTo(0,0);document.querySelector('.home-account-bar button')?.focus();});on('rankPrev','click',()=>{showRankPage(rankPage-1);});
  on('rankNext','click',()=>{showRankPage(rankPage+1);});
