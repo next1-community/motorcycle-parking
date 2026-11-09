@@ -17,7 +17,7 @@ function shuffleOpening() {
       <text y="23" text-anchor="middle" fill="#ffdc97" font-size="14" letter-spacing="2">NEXT1</text>
     </g>`;
   }).join('');
-  return `<section class="rank-reveal" data-page="0"><header><h1>洗牌中</h1></header>
+  return `<section class="rank-reveal" data-page="0"><header><h1>系統抽籤中</h1></header>
     <svg aria-hidden="true" viewBox="-210 -140 420 260" style="display:block;width:min(100%,820px);max-height:55vh;margin:auto">${cards}</svg></section>`;
 }
 export function startReveal(lots, render) {
