@@ -19,6 +19,9 @@
   line-height: 1.5;
   margin: 28px 0 16px;
 }
-.view-home .home-identity + h2::after { content: none; }
+.view-home .home-identity + h2::after { content: none; }#app:has(main > .login) { min-height:100dvh; display:flex; flex-direction:column; }
+#app main:has(> .login) { flex:1; display:grid; align-content:center; justify-items:center; width:100%; max-width:none; margin:0; padding:clamp(20px,4vw,48px) 16px; box-sizing:border-box; background:linear-gradient(rgb(14 61 63 / 28%),rgb(14 61 63 / 28%)),url("testing/community-lobby.jpg") center / cover no-repeat; background-color:#354f51; }
+#app main > .login { width:min(100%,480px); box-sizing:border-box; margin:0; background:white; }
+
 </style><link rel="stylesheet" href="testing/calendar.css?v=agenda-actions-1"></head>
 <body><div id="app"><p class="loading">正在開啟 NEXT1 社區機車位服務…</p></div><div id="toast" role="status" aria-live="polite"></div><dialog id="modal"></dialog></body></html>
