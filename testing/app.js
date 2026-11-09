@@ -92,7 +92,7 @@ function homeView(){
   .community-home{max-width:1060px;margin:3vh auto;color:#17374b}
   .community-home .home-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
   .home-title h1{margin:0;font-size:clamp(26px,4vw,46px)}
-  .home-task{background:linear-gradient(110deg,#103b50,#146d70);color:white;border-radius:20px;padding:clamp(24px,4vw,48px)}
+  .home-task{background:#103b50 linear-gradient(90deg,rgba(9,44,58,.98) 0%,rgba(9,44,58,.92) 34%,rgba(9,44,58,.15) 80%);background-image:linear-gradient(90deg,rgba(9,44,58,.98),rgba(9,44,58,.91) 38%,rgba(9,44,58,.12) 82%),url("testing/community-exterior.jpg");background-size:cover;background-position:center 48%;color:white;border-radius:20px;padding:clamp(24px,4vw,48px)}
   .home-task h2{color:white;font-size:clamp(25px,3vw,38px);margin:14px 0}
   .home-task p{color:#e1f5ed;margin:0 0 24px}
   .home-task a,.home-links a{display:inline-block;text-decoration:none;font-weight:700}
