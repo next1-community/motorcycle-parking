@@ -124,9 +124,11 @@ function homeView(){
   .home-upcoming small{background:#dfe4e6;padding:4px 9px;border-radius:6px;white-space:nowrap}
   .module-entry{display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:#124f48;min-height:82px;font-size:1.35rem;font-weight:700}
   .module-entry:hover,.module-entry:focus-visible{border-color:#126157;background:#f1f8f5}
+  .archive-result{background:#e1f0ea;color:#13473e;padding:10px 16px;font-size:1.25rem;font-weight:700;position:sticky;top:0;z-index:3}.archive-plan-body .parking-tile[aria-pressed=true]{background:#ffda47;outline:3px solid #244d4a}.archive-plan-body .parking-tile{cursor:pointer}
   .module-nav{display:flex;flex-wrap:wrap;gap:18px;margin:20px 0}
   </style><section class="community-home">${route()==='parking'?`
   <a class="module-nav" href="#/home">← 管理首頁</a><div class="home-banner"><h1>機車位管理</h1><button id="logout">登出</button></div>
+  <details class="home-module" id="archivePlan"><summary style="cursor:pointer;font-weight:700;font-size:1.25rem">車位平面圖 · 2026 年度</summary><div class="archive-plan-body"></div></details>
   ${annualLookup().replace("戶別登記與選位查詢","依戶別查詢車位編號")}<h2 class="home-section-heading">年度抽籤作業</h2><section class="home-module"><h3>2027 年度機車位抽籤</h3>
   <p>${status}${state.event.phase==='selecting'?' · 目前第 '+Number(state.event.current_rank)+' 順位':''}</p><div class="home-actions"><a href="#/admin">${action} →</a></div></section>
   <h2 class="home-section-heading">查詢與現場作業</h2><div class="home-grid">
@@ -170,7 +172,49 @@ async function calendarRequest(query, entry, method=entry?'POST':'GET') {
   if(modifying && (await response.json()).length!==1) throw Error('記事已異動');
   return method==='GET' ? response.json() : null;
 }
-function bind(){const calendar=document.querySelector('.community-calendar');if(calendar)mountCalendar(calendar,calendarRequest);mapResizeObserver?.disconnect();if($('.map-shell')){fitParkingMap();mapResizeObserver=new ResizeObserver(fitParkingMap);mapResizeObserver.observe($('.map-shell'));}const on=(id,event,fn)=>{const el=$('#'+id);if(el)el.addEventListener(event,fn);};on('homeTop','click',()=>{window.scrollTo(0,0);document.querySelector('.home-account-bar button')?.focus();});on('rankPrev','click',()=>{showRankPage(rankPage-1);});
+function bindArchivePlan(panel) {
+  const body=panel.querySelector('.archive-plan-body');
+  async function showPlan(){
+    if(!panel.open || body.dataset.loaded)return;
+    body.dataset.loaded='loading';
+    body.textContent='正在讀取 2026 年度選位結果…';
+    try {
+      const data=await rpc('history',{p_year:2026,p_household:'',p_spot:null},true);
+      const records=new Map(data.rows.map(row=>[row.spot,row]));
+      if(records.size!==62)throw Error('資料未齊');
+      const staging=document.createElement('div');
+      staging.innerHTML=renderMap({event:{},lots:data.rows.filter(r=>r.household)});
+      const diagram=staging.querySelector('.parking-diagram');
+      diagram.style.cssText='width:100%;min-width:0;--map-number-size:clamp(9px,1.2vw,17px)';
+      const describe=n=>n<=2?'不開放':(n===3?'指定使用 · ':'')+(records.get(n).household||'未登載戶別');
+      for(const button of diagram.querySelectorAll('[data-spot]')){
+        const n=Number(button.dataset.spot);
+        button.removeAttribute('data-spot');
+        button.dataset.archiveSpot=n;
+        button.disabled=false;
+        button.title=n+' 號 · '+describe(n);
+        button.setAttribute('aria-label',button.title);
+      }
+      body.innerHTML='<p class="muted">使用期間：2026/04/01 ～ 2027/03/31</p><p class="archive-result" role="status">點選車格，查看對應戶別。</p>';
+      body.append(diagram);
+      diagram.onclick=event=>{
+        const button=event.target.closest('[data-archive-spot]');
+        if(!button)return;
+        diagram.querySelector('[aria-pressed="true"]')?.removeAttribute('aria-pressed');
+        button.setAttribute('aria-pressed','true');
+        const n=Number(button.dataset.archiveSpot);
+        body.querySelector('[role=status]').textContent=n+' 號車位　'+describe(n);
+      };
+      body.dataset.loaded='ready';
+    }catch{
+      delete body.dataset.loaded;
+      body.innerHTML='<p role="alert">無法載入年度車位紀錄。</p><button type="button">重新讀取</button>';
+      body.querySelector('button').onclick=showPlan;
+    }
+  }
+  panel.ontoggle=showPlan;
+}
+function bind(){const archivePanel=document.querySelector("#archivePlan");if(archivePanel)bindArchivePlan(archivePanel);const calendar=document.querySelector('.community-calendar');if(calendar)mountCalendar(calendar,calendarRequest);mapResizeObserver?.disconnect();if($('.map-shell')){fitParkingMap();mapResizeObserver=new ResizeObserver(fitParkingMap);mapResizeObserver.observe($('.map-shell'));}const on=(id,event,fn)=>{const el=$('#'+id);if(el)el.addEventListener(event,fn);};on('homeTop','click',()=>{window.scrollTo(0,0);document.querySelector('.home-account-bar button')?.focus();});on('rankPrev','click',()=>{showRankPage(rankPage-1);});
  on('rankNext','click',()=>{showRankPage(rankPage+1);});
  on('rankPage','change',e=>{showRankPage(Number(e.target.value));});
  on('historyForm','submit',e=>{e.preventDefault();historyYear=$('#historyYear').value;historyHousehold=$('#historyHousehold').value.trim();historySpot=$('#historySpot').value;draw();});on('historyClear','click',()=>{historyYear='';historyHousehold='';historySpot='';draw();});on('historyRetry','click',loadHistory);on('historyExport','click',exportHistory);on('switchMode','click',()=>changeMode(mode==='demo'?'cloud':'demo'));on('demoEntry','click',()=>changeMode('demo'));on('retry','click',()=>load());on('building','change',e=>{formState.building=e.target.value;formState.household=households.find(h=>h.id.replace(/-\d+F$/,'')===formState.building).id;formState.quantity=1;formState.consent=false;formState.token='';receipt=null;draw();});on('household','change',e=>{formState.household=e.target.value;formState.quantity=1;formState.consent=false;formState.token='';receipt=null;draw();});on('quantity','change',e=>formState.quantity=Number(e.target.value));on('consent','change',e=>formState.consent=e.target.checked);on('modifyToken','input',e=>formState.token=e.target.value.trim());on('registerForm','submit',async e=>{e.preventDefault();if(!formState.consent)return toast('請先閱讀並勾選同意管理辦法');await submitRegister(formState.quantity);});on('cancelReg','click',()=>ask('取消年度登記',`確定取消 ${formState.household} 的登記？需使用原修改碼。`,()=>submitRegister(0)));on('copyToken','click',()=>navigator.clipboard.writeText(receipt.token).then(()=>toast('修改碼已複製')).catch(()=>toast('請長按或選取修改碼複製')));on('mapFit','click',()=>{mapZoom=1;draw();});on('zoomIn','click',()=>{mapZoom=Math.min(2.4,+(mapZoom+.1).toFixed(1));draw();});on('zoomOut','click',()=>{mapZoom=Math.max(.5,+(mapZoom-.1).toFixed(1));draw();});on('mapStyle','click',()=>{mapStyle=mapStyle==='plan'?'grid':'plan';draw();});on('toggleTable','click',()=>{drawer=drawer==='lots'?'registrations':'lots';draw();});document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>{if(['reopen','lock','draw','waive'].includes(b.dataset.action))ask(b.textContent,b.dataset.action==='reopen'?'解除名單鎖定後，原有登記會保留。尚未登記的住戶可以補登，已登記的住戶可以修改申請。':b.dataset.action==='draw'?'將一次產生全部順位並保存，本次不能重抽。':b.dataset.action==='lock'?'鎖定後住戶將無法新增或修改登記。':'僅放棄目前名額，不影響同戶另一個名額。',()=>act(b.dataset.action));else act(b.dataset.action);});document.querySelectorAll('[data-spot]:not(:disabled)').forEach(b=>b.onclick=()=>act(current()?.spot?'change_pending':'pending',Number(b.dataset.spot)));on('editSpot','click',()=>{editingRank=state.event.current_rank;broadcastDisplay(state);draw();});on('cancelEdit','click',()=>{editingRank=null;broadcastDisplay(state);draw();});on('propose','click',()=>act('pending',Number($('#spotNumber').value)));on('spotNumber','keydown',e=>{if(e.key==='Enter'){e.preventDefault();act('pending',Number(e.target.value));}});on('delegate','click',()=>{const n=available(state)[0];if(!n)return toast('已無可用車位');ask('未到場代排',`建議依編號安排 ${n} 號，請管理中心核對後再確認選位。`,()=>act('delegate',n));});on('exportResults','click',exportCSV);on('print','click',()=>window.print());on('showAnnualLookup','click',()=>{$('#annualLookup')?.scrollIntoView({behavior:'smooth',block:'start'});$('#lookup')?.focus({preventScroll:true});});on('lookup','input',e=>lookQuery=e.target.value);on('annualLookupForm','submit',e=>{e.preventDefault();draw();$('#lookup')?.focus();});on('clearAnnualLookup','click',()=>{lookQuery='';draw();});on('resetDemo','click',()=>ask('重設現場演練模式','只重設目前演練進度，不影響本年度登記與選位結果。',()=>{saveDemo(demoSeed());state=null;load();}));on('fullscreen','click',()=>document.documentElement.requestFullscreen?.().catch(()=>toast('請使用瀏覽器全螢幕功能')));on('logout','click',()=>{clearHistory();session=null;sessionStorage.removeItem(authKey);load();});on('loginForm','submit',async e=>{e.preventDefault();const email=$('#email').value.trim(),password=$('#password').value;try{session=await api('/auth/v1/token?grant_type=password',{email,password});session.expires_at=Date.now()/1000+session.expires_in;sessionStorage.setItem(authKey,JSON.stringify(session));await load();if(state?.is_admin && route()==='admin'){location.hash='/home';}else if(!state?.is_admin)toast('已登入，但此帳號未獲管理權限');}catch(err){toast(err.message);}});}
