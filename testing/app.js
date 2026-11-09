@@ -99,7 +99,8 @@ function homeView(){
   .view-home .home-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .view-home .home-module{min-height:74px;padding:18px 22px}
   .view-home .home-grid>a{border-left:5px solid #187269}
-  .view-home .property-footer{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:#173f44;color:white;padding:18px clamp(20px,5vw,80px);margin:20px 0 0}
+  .view-home .property-footer{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:#173f44;color:white;box-sizing:border-box;width:100%;max-width:none;padding:18px max(28px,calc((100% - 1100px)/2));margin:20px 0 0}
+  @media(max-width:850px){.view-home .property-footer{padding-inline:18px}}
   .property-footer nav{display:flex;align-items:center;gap:18px}.property-footer a{color:white;text-decoration:underline}.property-footer button{background:transparent;color:white;border:1px solid #9db5b4;padding:6px 12px}
   @media(max-width:600px){.view-home .home-grid{grid-template-columns:1fr}}
   .home-account-bar nav{display:flex;justify-content:flex-end}
