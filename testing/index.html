@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-Hant"><head><base href="../"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#123c37"><title>NEXT1 社區｜機車位抽籤</title><link rel="stylesheet" href="testing/style.css?v=testing-flow-19"><script type="module" src="testing/app.js?v=resident-entry-2"></script><link rel="stylesheet" href="testing/rank-reveal.css"><style>.view-display .map-controls > span:first-child,.view-display .map-source{display:none}.view-display .map-controls{justify-content:flex-end}@media (min-width: 1000px) {
+<html lang="zh-Hant"><head><base href="../"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#123c37"><title>NEXT1 社區｜機車位抽籤</title><link rel="stylesheet" href="testing/style.css?v=testing-flow-19"><script type="module" src="testing/app.js?v=registration-qr-1"></script><link rel="stylesheet" href="testing/rank-reveal.css"><style>.view-display .map-controls > span:first-child,.view-display .map-source{display:none}.view-display .map-controls{justify-content:flex-end}@media (min-width: 1000px) {
   .view-display .card:has(> .parking-counts) {display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-content:start;align-items:center;gap:10px 12px}
   .view-display .card:has(> .parking-counts) .map-head {display:contents}
   .view-display .map-head h2 {grid-area:1/1;white-space:nowrap}
@@ -57,5 +57,16 @@
 #app main:has(> .login)::before {inset:50% auto auto 26%;transform:translate(-50%,-50%);width:min(52%, 66svh);aspect-ratio:3 / 4;mask-image:linear-gradient(to right,transparent,#000 16%,#000 82%,transparent),linear-gradient(to bottom,transparent,#000 16%,#000 93%,transparent);mask-composite:intersect}
 @media(min-width:801px){#app main:has(> .login){padding-left:51%}}
 @media(max-width:800px){#app main:has(> .login){padding-top:205px}#app main:has(> .login)::before{inset:5px auto auto 50%;transform:translateX(-50%);width:auto;height:190px}}
+.registration-tools {display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.registration-tools .module-entry {flex:1}
+dialog.registration-qr {width:min(90vw,38rem);max-height:90dvh;overflow:auto;text-align:center}
+.registration-qr-image {display:block;width:min(100%,53dvh);height:auto;margin:auto}
+.registration-qr .toolbar {justify-content:center;gap:.75rem}
+@media print {
+  body:has(dialog.registration-qr[open]) > :not(dialog.registration-qr) {display:none !important}
+  dialog.registration-qr[open] {position:static;width:100%;max-height:none;border:0;box-shadow:none;margin:auto;color:black;background:white}
+  dialog.registration-qr::backdrop,.registration-qr .toolbar {display:none}
+  .registration-qr-image {width:95mm}
+}
 </style><link rel="stylesheet" href="testing/calendar.css?v=agenda-actions-1"></head>
 <body><div id="app"><p class="loading">正在開啟 NEXT1 社區機車位服務…</p></div><div id="toast" role="status" aria-live="polite"></div><dialog id="modal"></dialog></body></html>
