@@ -41,7 +41,30 @@ function recordInput(event){
 for(const type of ['pointerdown','keydown','input','wheel','click'])window.addEventListener(type,recordInput,{capture:true,passive:false});
 for(const type of ['focus','pageshow','hashchange'])window.addEventListener(type,idleExpired);
 document.addEventListener('visibilitychange',idleExpired);
-setInterval(idleExpired,1000);idleExpired();
+let roleSession=null, roleLabel='';
+const roleNames={system_admin:'系統管理員',manager:'社區經理',security:'社區保全',committee:'社區委員'};
+function updateIdleClock(){
+ if(idleExpired() || !session || !isOperator())return;
+ const button=document.getElementById('logout');
+ if(!button)return;
+ const identity=session.user?.id;
+ if(identity && identity!==roleSession){
+   roleSession=identity;roleLabel='';
+   rpc('my_role',{},true).then(role=>{if(session?.user?.id===identity)roleLabel=roleNames[role]||'';}).catch(()=>{if(roleSession===identity)setTimeout(()=>{if(roleSession===identity)roleSession=null;},15000);});
+ }
+ let clock=button.previousElementSibling;
+ if(!clock?.classList.contains('idle-clock')){
+   clock=document.createElement('span');clock.className='idle-clock';
+   clock.setAttribute('role','timer');clock.setAttribute('aria-live','off');
+   clock.style.cssText='display:inline-block;white-space:nowrap;font:600 .875rem/1.5 system-ui,sans-serif;font-variant-numeric:tabular-nums;color:#173f44;background:#e8f3ef;border-radius:.5rem;padding:.3rem .55rem;margin-inline-end:.45rem;vertical-align:middle';
+   const group=document.createElement('span');group.style.cssText='display:inline-flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:.25rem';button.before(group);const badge=document.createElement('span');badge.className='current-role';badge.style.cssText='font-weight:600;color:#173f44;background:#e8f3ef;border-radius:.5rem;padding:.3rem .55rem';group.append(badge,clock,button);
+ }
+ const badge=clock.previousElementSibling;badge.textContent=roleLabel?'登入角色：'+roleLabel:'';badge.hidden=!roleLabel;
+ const left=Math.max(0,Math.ceil((Number(sessionStorage.getItem(idleKey))+idleLimit-Date.now())/1000));
+ clock.textContent='距離登出：'+String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0');
+ clock.style.background=left<=60?'#ffe6a5':'#e8f3ef';
+}
+setInterval(updateIdleClock,1000);idleExpired();
 if(sessionStorage.getItem(authKey+'-notice')){sessionStorage.removeItem(authKey+'-notice');setTimeout(()=>toast('已閒置 15 分鐘，請重新登入。'),100);}
 const randomToken=()=>Array.from(crypto.getRandomValues(new Uint8Array(24)),b=>b.toString(16).padStart(2,'0')).join('');
 function toast(msg){$('#toast').textContent=msg;$('#toast').classList.add('show');setTimeout(()=>$('#toast').classList.remove('show'),5000);}
