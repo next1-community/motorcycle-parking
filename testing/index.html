@@ -36,14 +36,64 @@ body.view-home .home-account-bar #logout:hover,body.view-home .home-account-bar 
 @media(max-width:650px){body.view-home header.home-account-bar{flex-wrap:wrap;gap:6px}body.view-home .home-account-bar nav{margin-left:auto}body.view-home .home-account-bar nav>span{gap:.5rem!important}body.view-home .home-account-bar #logout{min-height:44px}}
 body.view-home .home-account-bar .current-role:not([hidden]){display:inline-flex;align-items:center;gap:.45rem}
 body.view-home .current-role::before{content:"";width:1.05rem;height:1.05rem;background:currentColor;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='12' cy='7.5' r='3.6'/%3E%3Cpath d='M4 21v-2a8 8 0 0 1 16 0v2'/%3E%3C/svg%3E") center/contain no-repeat}
-body.view-home .home-identity{grid-template-columns:minmax(0,1fr) auto;background:#dcece6}
-body.view-home .home-identity .home-photo{display:block;height:clamp(210px,23vw,275px);width:auto;max-width:100%;object-fit:contain}
-@media(max-width:650px){
- body.view-home .home-identity{grid-template-columns:minmax(0,1fr) 28%}
- body.view-home .home-identity .home-photo{width:100%;height:auto;align-self:center}
- body.view-home .home-identity .home-brand{flex-wrap:wrap;padding:16px;gap:8px}
- body.view-home .home-identity h1{font-size:clamp(1.15rem,4vw,1.55rem)}
+body.view-home .community-home {
+  font: 1rem/1.6 Arial, "Microsoft JhengHei", "PingFang TC", sans-serif;
 }
+body.view-home .home-identity {
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  background: #e8e7df;
+}
+body.view-home .home-brand {
+  padding: clamp(20px, 4vw, 48px);
+  background: linear-gradient(105deg, #e2eeea, #e8e7df);
+}
+body.view-home .home-brand h1 {
+  font-size: clamp(2rem, 3vw, 2.25rem);
+  line-height: 1.25;
+  letter-spacing: -.025em;
+  text-wrap: balance;
+}
+body.view-home .home-identity .home-photo {
+  width: 100%;
+  height: clamp(240px, 24vw, 290px);
+  object-fit: contain;
+  object-position: center;
+  background: linear-gradient(90deg, #e8e7df, #d2cec2);
+}
+body.view-home .community-home :is(.home-section-heading, .community-calendar > h2) {
+  font-size: 1.25rem;
+}
+body.view-home .home-grid :is(.module-entry, h3) {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+body.view-home footer.property-footer {
+  background: #e3ede9;
+  color: #244741;
+  border-top: 1px solid #c5d7d1;
+  font: 400 .875rem/1.55 Arial, "Microsoft JhengHei", "PingFang TC", sans-serif;
+}
+body.view-home .property-footer :is(a, button) {color: inherit; font: inherit}
+body.view-home .property-footer button {border-color: #a6bdb5}
+@media (max-width:650px) {
+  body.view-home .home-identity {grid-template-columns: minmax(0, 1fr) 33%}
+  body.view-home .home-brand {padding: 16px; flex-direction: column; align-items: flex-start; justify-content: center; gap: 6px}
+  body.view-home .home-brand h1 {font-size: clamp(1.3rem, 5vw, 1.65rem)}
+  body.view-home .home-identity .home-photo {height: 100%; min-height: 155px}
+  body.view-home footer.property-footer {align-items: flex-start; flex-direction: column; gap: 8px; text-align: left}
+  body.view-home .property-footer nav {flex-wrap: wrap; gap: 16px}
+}
+.accounts-dialog {box-sizing:border-box; overscroll-behavior:contain}
+.accounts-dialog .account-heading, .accounts-dialog .account-actions {display:flex; align-items:center; justify-content:space-between; gap:12px}
+.accounts-dialog .account-heading {margin-bottom:16px}
+.accounts-dialog .account-heading h2,.accounts-dialog [data-list] p {margin:0}
+.accounts-dialog [data-list] small {display:block; color:#4e6560}
+.accounts-dialog [data-list] button {flex:none}
+.accounts-dialog form:not([hidden]) {display:grid; gap:16px; padding-top:16px}
+.accounts-dialog form :is(p,label) {margin:0}
+.accounts-dialog .account-enabled {display:flex; align-items:center; gap:8px}
+.accounts-dialog .account-enabled input {width:18px; height:18px; margin:0}
+.accounts-dialog .account-actions {justify-content:flex-end; border-top:1px solid #d6e4df; padding-top:12px}
 #app:has(main > .login) {
   min-height: 100dvh;
   display: flex;

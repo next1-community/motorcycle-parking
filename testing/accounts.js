@@ -8,9 +8,10 @@ export async function mountAccounts(root, rpc) {
   root.innerHTML = '<h2 class="home-section-heading">系統管理</h2><div class="home-grid"><button type="button" aria-haspopup="dialog" class="home-module module-entry"><span class="module-label"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 2 3 6v5c0 5 4 9 9 11 5-2 9-6 9-11V6z"/><path d="m8 12 3 3 5-6"/></svg>帳號與權限</span><span aria-hidden="true">→</span></button></div>';
   root.querySelector('button').onclick = async () => {
     const dialog = document.createElement('dialog');
+    dialog.className='accounts-dialog';
     dialog.setAttribute('aria-label','帳號與權限');
     dialog.style.cssText='width:min(42rem,92vw);max-height:85vh;overflow:auto;padding:clamp(18px,3vw,32px);border:1px solid #bfd5ce;border-radius:18px;color:#173934';
-    dialog.innerHTML = '<h2>帳號與權限</h2><button data-add>新增帳號權限</button> <button data-close>關閉</button><div data-list></div><form hidden><p data-note></p><label class="field">電子郵件<input type="email" required></label><label class="field">角色<select></select></label><label><input type="checkbox"> 啟用帳號</label><button class="primary">儲存</button></form><p role="status"></p>';
+    dialog.innerHTML = '<div class="account-heading"><h2>帳號與權限</h2><button data-close>關閉</button></div><button data-add>新增帳號權限</button><div data-list></div><form hidden><p data-note></p><label class="field">電子郵件<input type="email" required></label><label class="field">角色<select></select></label><label class="account-enabled"><input type="checkbox">啟用帳號</label><div class="account-actions"><button class="primary">儲存</button></div></form><p role="status"></p>';
     document.body.append(dialog);
     dialog.onclose = () => dialog.remove();
     dialog.querySelector('[data-close]').onclick = () => dialog.close();
@@ -23,7 +24,7 @@ export async function mountAccounts(root, rpc) {
     function edit(account) {
       form.hidden = false;
       email.readOnly = Boolean(account);
-      form.querySelector('[data-note]').textContent=account?'編輯角色與啟用狀態':'請輸入已在測試專案建立的登入信箱。';
+      form.querySelector('[data-note]').textContent=account?'編輯角色與啟用狀態':'請先在 Supabase 建立登入帳號並設定密碼，再於此輸入相同信箱、指派角色。';
       email.value = account?.email || '';
       role.value = account?.role || 'security';
       enabled.checked = account?.enabled ?? true;
@@ -41,7 +42,11 @@ export async function mountAccounts(root, rpc) {
         editButton.textContent = '編輯';
         editButton.onclick = () => edit(account);
         row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #d6e4df;padding:12px 0;overflow-wrap:anywhere';
-        row.append(account.email + ' · ' + roles[account.role] + ' · ' + (account.enabled?'啟用':'停用') + ' ',editButton);
+        const details = document.createElement('span');
+        const meta = document.createElement('small');
+        meta.textContent = roles[account.role] + ' · ' + (account.enabled?'啟用':'停用');
+        details.append(account.email, meta);
+        row.append(details, editButton);
         list.append(row);
       }
     }
