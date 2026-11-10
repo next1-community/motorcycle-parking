@@ -75,8 +75,14 @@ function nextList(showSlot = true, limit = 3){return `<ul class="nextlist">${sta
 function lotStatus(lot){return lot?.status==='waitlisted'?'備取 '+lot.waitlist_rank+' 號':statusName[lot?.status];}
 function loginView(){return `<div class="card login"><style>
 @media(max-width:800px) {
-  .view-login #app main:has(> .login) {padding:24px 16px;align-content:start}
-  .view-login #app main:has(> .login)::before {display:none}
+  .view-login #app main:has(> .login) {padding:clamp(68px,12svh,96px) 16px 24px;align-content:start}
+  .view-login #app main:has(> .login)::before {
+    inset:0; width:100%; height:100%; transform:none; aspect-ratio:auto;
+    background-size:auto clamp(310px,65svh,530px); background-position:70% -24px;
+    opacity:.44; mask-image:linear-gradient(to bottom,#000 12%,transparent 78%);
+    pointer-events:none;
+  }
+  .view-login #app main > .login {background:rgba(255,255,255,.94)}
   .view-login .login .eyebrow {display:none}
   .view-login .login input {font-size:16px}
 }
