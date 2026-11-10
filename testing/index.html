@@ -25,6 +25,15 @@
   margin: 28px 0 16px;
 }
 .view-home .community-home :is(.home-section-heading, .community-calendar > h2)::after { content: none; }
+body.view-home header.home-account-bar{min-height:0;height:auto;padding:6px clamp(16px,4vw,64px);line-height:1.25}
+body.view-home .home-account-bar nav{padding:0;margin:0;min-height:0}
+body.view-home .home-account-bar nav>span{gap:.9rem!important;align-items:center}
+body.view-home .home-account-bar :is(.current-role,.idle-clock){background:transparent!important;color:#e2efee!important;padding:0!important;margin:0!important;font:500 .875rem/1.35 system-ui,sans-serif!important}
+body.view-home .home-account-bar .idle-clock{border-inline-start:1px solid #638080;padding-inline-start:.9rem!important;font-variant-numeric:tabular-nums!important}
+body.view-home .home-account-bar .idle-clock[style*="255, 230, 165"]{color:#ffe6a5!important}
+body.view-home .home-account-bar #logout{min-height:34px;min-width:52px;padding:4px 12px;border:1px solid #849f9e;border-radius:6px;background:transparent;color:white;font-size:.875rem}
+body.view-home .home-account-bar #logout:hover,body.view-home .home-account-bar #logout:focus-visible{background:#31595b}
+@media(max-width:650px){body.view-home header.home-account-bar{flex-wrap:wrap;gap:6px}body.view-home .home-account-bar nav{margin-left:auto}body.view-home .home-account-bar nav>span{gap:.5rem!important}body.view-home .home-account-bar #logout{min-height:44px}}
 #app:has(main > .login) {
   min-height: 100dvh;
   display: flex;
