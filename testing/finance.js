@@ -34,39 +34,28 @@ export function showFinance(root,data){
       if(valid(cur)&&valid(old)){
         const total=sum(cur.slice(0,n)), base=sum(old.slice(0,n)), delta=total-base;
         const changed=cur.slice(0,n).map((v,i)=>({i,d:v-old[i]}));
-        const desc=(x)=>x.i+1+' 月'+(x.d>0?'增加':'減少')+fmt(Math.abs(x.d))+' 元';
-        const up=changed.filter(x=>x.d>0).sort((x,y)=>y.d-x.d)[0], down=changed.filter(x=>x.d<0).sort((x,y)=>x.d-y.d)[0];
-        const hist=ys.filter(y=>y<year&&valid(data[y].items[subject])).map(y=>sum(data[y].items[subject].slice(0,n)));
-        insight='<h3>'+title+'較去年同期'+(delta===0?'持平':(delta>0?'增加':'減少')+fmt(Math.abs(delta))+' 元')+'</h3><p>今年 1–'+n+' 月共 '+fmt(total)+' 元，去年同期 '+fmt(base)+' 元。'+(hist.length>1?'過去 '+hist.length+' 年同期介於 '+fmt(Math.min(...hist))+' 至 '+fmt(Math.max(...hist))+' 元。':'')+'</p><p><b>差額來自哪些月份？</b> '+([up,down].filter(Boolean).map(desc).join('；')||'各月均與去年相同')+'。</p>';
-        if(subject==='修繕費')insight+='<p>請先核對差額較大月份的工程項目及付款期別，再判斷是否為持續增加的維護成本。</p>';
+        const totals=ys.filter(y=>valid(data[y].items[subject])).map(y=>[y,sum(data[y].items[subject].slice(0,n))]);
+        const maxTotal=Math.max(1,...totals.map(entry=>Math.abs(entry[1])));
+        const maxChange=Math.max(1,...changed.map(entry=>Math.abs(entry.d)));
+        const signed=value=>(value>0?'+':'')+fmt(value);
+        const annual=totals.map(([y,value])=>`<div class="fy"><span>${y}</span><span class="track"><i style="width:${100*Math.abs(value)/maxTotal}%;background:${y===year?'#17665d':'#a6beba'}"></i></span><b>${fmt(value)}</b></div>`).join('');
+        const months=changed.map(({i,d})=>`<div class="fm"><span>${i+1} 月</span><span class="axis"><i style="${d<0?'right':'left'}:50%;width:${50*Math.abs(d)/maxChange}%;background:${d<0?'#25766c':'#ad602a'}"></i></span><b>${signed(d)}</b></div>`).join('');
+        insight=`<style>
+          .fcompare{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,285px),1fr));gap:24px;margin:20px 0}
+          .fcompare figure{margin:0;padding:20px;border:1px solid #d4e1de;border-radius:14px}
+          .fcompare figcaption{font-weight:700;margin-bottom:15px}.fy,.fm{display:grid;grid-template-columns:3em 1fr 5.5em;align-items:center;gap:8px;font-variant-numeric:tabular-nums}
+          .fy{margin:18px 0}.fm{margin:4px 0}.fy b,.fm b{text-align:right}.track,.axis{height:13px;position:relative}.track i,.axis i{display:block;position:absolute;height:100%;border-radius:3px}.axis{background:linear-gradient(to right,transparent 49.6%,#788b88 49.6% 50.4%,transparent 50.4%)}
+          .fheadline{margin:20px 0 0;background:#e8f3ef;border-radius:12px;padding:18px}.fheadline strong{font-size:clamp(24px,3vw,38px);display:block}
+        </style><div class="fheadline">${title} · 較去年同期<strong>${signed(delta)} 元 ${base>0?'（'+signed(delta/base*100)+'%）':''}</strong></div><div class="fcompare"><figure><figcaption>歷年同期支出 · 1 至 ${n} 月</figcaption>${annual}</figure><figure><figcaption>每月較去年增減 · 左減少／右增加</figcaption>${months}</figure></div>`;
         if(subject==='水費'||subject==='電費'){const [,step,min]=rules.find(([k])=>k===subject);const ps=periods(data,year,subject,step);const hits=ps.filter(p=>p.diff>=min&&p.diff/p.base>=0.25);insight+='<p><b>費用提醒：</b>'+(!ps.length?'歷史資料不足。':hits.length?hits.map(p=>(step===2?(p.month-1)+'–':'')+p.month+' 月').join('、')+'超過提醒門檻。請核對帳單期間、用量及費率。':'本期沒有超過提醒門檻。')+'</p>';}
       }
-      return '<label>選擇支出項目 <select id="fin-sub">'+subjects.map(k=>'<option '+(subject===k?'selected':'')+'>'+safe(k)+'</option>').join('')+'</select></label>'+insight+'<canvas aria-label="各年度每月支出走勢"></canvas><details><summary>查看逐月金額</summary><div class="fin-scroll"><table><thead><tr><th>月份</th>'+ys.map(y=>'<th>'+y+' 年</th>').join('')+'</tr></thead><tbody>'+Array.from({length:12},(_,i)=>'<tr><th>'+(i+1)+' 月</th>'+ys.map(y=>{const v=data[y].items[subject]?.[i];return '<td>'+(v==null?'—':fmt(v))+'</td>'}).join('')+'</tr>').join('')+'</tbody></table></div></details>';};
+      return '<label>選擇支出項目 <select id="fin-sub">'+subjects.map(k=>'<option '+(subject===k?'selected':'')+'>'+safe(k)+'</option>').join('')+'</select></label>'+insight+'<details><summary>查看逐月金額</summary><div class="fin-scroll"><table><thead><tr><th>月份</th>'+ys.map(y=>'<th>'+y+' 年</th>').join('')+'</tr></thead><tbody>'+Array.from({length:12},(_,i)=>'<tr><th>'+(i+1)+' 月</th>'+ys.map(y=>{const v=data[y].items[subject]?.[i];return '<td>'+(v==null?'—':fmt(v))+'</td>'}).join('')+'</tr>').join('')+'</tbody></table></div></details>';};
     const diffs=prev?Object.entries(r.items).map(([k,v])=>[k,sum(v)-sum((prev.items[k]||[]).slice(0,n))]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,5):[];
     const notices=rules.flatMap(([k,step,min])=>periods(data,year,k,step).filter(p=>p.pct>=25&&p.diff>=min).map(p=>'<p><b>'+k+' · '+(step===2?(p.month-1)+'–':'')+p.month+' 月</b><br>'+fmt(p.amount)+' 元，較同期中位數增加 '+fmt(p.diff)+' 元（'+fmt(p.pct)+'%）</p>'));
     root.innerHTML='<a href="'+location.pathname+location.search+'#/home">← 管理首頁</a><header><div><small>勝輝 NEXT1 社區</small><h1>社區財務</h1></div><label>年度 <select id="fin-year">'+years.map(y=>'<option '+(y===year?'selected':'')+'>'+y+'</option>').join('')+'</select></label></header><p>'+year+' 年 1 至 '+n+' 月｜金額單位：新臺幣元</p><nav>'+[['overview','財務總覽'],['history','歷年比較']].map(([v,t])=>'<button data-tab="'+v+'" aria-pressed="'+(v===tab)+'">'+t+'</button>').join('')+'</nav>'+(tab==='history'?'<section><h2>同期支出分析</h2>'+compare()+'</section>':'<div class="fin-metrics">'+metric('income','累計收入')+metric('expense','累計支出')+metric('balance','月底累計結餘')+'</div><div class="fin-panels"><section><h2>哪些支出增加最多？</h2>'+ (diffs.length?diffs.map(([k,d])=>'<button data-item="'+safe(k)+'"><span>'+safe(k)+'</span><b>+'+fmt(d)+'</b><i style="width:'+Math.round(100*d/diffs[0][1])+'%"></i></button>').join(''):'尚無前一年度可比較')+'</section><section><h2>水電費提醒</h2>'+(notices.join('')||(year<2025?'可比較歷史不足兩年':'本期未達提醒門檻'))+'<details><summary>查看回測規則</summary>以前二至三年同期中位數為基準。高出 25%，且電費單月至少增加 2,000 元，或水費雙月至少增加 300 元時提醒。水費以財報中列為「水費」的金額計算。</details></section></div>');
     root.querySelector('#fin-year').onchange=e=>{year=Number(e.target.value);render()};
     root.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render()});
     root.querySelectorAll('[data-item]').forEach(b=>b.onclick=()=>{subject=b.dataset.item;tab='history';render()});
-    const canvas=root.querySelector('canvas');
-    if(canvas){
-      const ys=years.filter(y=>y<=year);
-      const colors=['#716789','#a47334','#49718d','#11675e'];
-      const width=Math.max(280,canvas.clientWidth),height=190;
-      const scale=window.devicePixelRatio||1;
-      canvas.width=width*scale;canvas.height=height*scale;
-      const ctx=canvas.getContext('2d');ctx.scale(scale,scale);
-      const peak=Math.max(1,...ys.flatMap(y=>data[y].items[subject]||[]));
-      ctx.font='12px system-ui';ctx.fillStyle='#405452';
-      ctx.fillText(fmt(peak)+' 元',3,18);
-      for(const [i,y] of ys.entries()){
-        const values=data[y].items[subject];if(!values)continue;
-        ctx.strokeStyle=ctx.fillStyle=colors[i];ctx.lineWidth=y===year?3:1.5;
-        ctx.fillText(y+' 年',10+i*(width/4),height-4);
-        ctx.beginPath();values.forEach((v,m)=>{const x=10+m*(width-24)/11,py=height-42-v/peak*(height-76);if(m===0)ctx.moveTo(x,py);else ctx.lineTo(x,py)});ctx.stroke();
-      }
-      ctx.fillStyle='#405452';ctx.fillText('1 月',4,height-24);ctx.fillText('12 月',width-36,height-24);
-    }
     const pick=root.querySelector('#fin-sub');if(pick)pick.onchange=e=>{subject=e.target.value;render()};
   }
   render();
