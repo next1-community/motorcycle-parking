@@ -3,7 +3,7 @@
 <meta name="description" content="社區物業管理中心專用入口">
 <meta property="og:type" content="website">
 <meta property="og:title" content="NEXT1 社區管理系統｜測試版">
-<meta property="og:description" content="社區物業管理中心專用入口"><link rel="stylesheet" href="testing/style.css?v=testing-flow-19"><script type="module" src="testing/app.js?v=test-registration-2"></script><link rel="stylesheet" href="testing/rank-reveal.css"><style>.view-display .map-controls > span:first-child,.view-display .map-source{display:none}.view-display .map-controls{justify-content:flex-end}@media (min-width: 1000px) {
+<meta property="og:description" content="社區物業管理中心專用入口"><link rel="stylesheet" href="testing/style.css?v=testing-flow-19"><script type="module" src="testing/app.js?v=lobby-role-1"></script><link rel="stylesheet" href="testing/rank-reveal.css"><style>.view-display .map-controls > span:first-child,.view-display .map-source{display:none}.view-display .map-controls{justify-content:flex-end}@media (min-width: 1000px) {
   .view-display .card:has(> .parking-counts) {display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-content:start;align-items:center;gap:10px 12px}
   .view-display .card:has(> .parking-counts) .map-head {display:contents}
   .view-display .map-head h2 {grid-area:1/1;white-space:nowrap}
@@ -34,6 +34,16 @@ body.view-home .home-account-bar .idle-clock[style*="255, 230, 165"]{color:#ffe6
 body.view-home .home-account-bar #logout{min-height:34px;min-width:52px;padding:4px 12px;border:1px solid #849f9e;border-radius:6px;background:transparent;color:white;font-size:.875rem}
 body.view-home .home-account-bar #logout:hover,body.view-home .home-account-bar #logout:focus-visible{background:#31595b}
 @media(max-width:650px){body.view-home header.home-account-bar{flex-wrap:wrap;gap:6px}body.view-home .home-account-bar nav{margin-left:auto}body.view-home .home-account-bar nav>span{gap:.5rem!important}body.view-home .home-account-bar #logout{min-height:44px}}
+body.view-home .home-account-bar .current-role:not([hidden]){display:inline-flex;align-items:center;gap:.45rem}
+body.view-home .current-role::before{content:"";width:1.05rem;height:1.05rem;background:currentColor;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='12' cy='7.5' r='3.6'/%3E%3Cpath d='M4 21v-2a8 8 0 0 1 16 0v2'/%3E%3C/svg%3E") center/contain no-repeat}
+body.view-home .home-identity{grid-template-columns:minmax(0,1fr) auto;background:#dcece6}
+body.view-home .home-identity .home-photo{display:block;height:clamp(210px,23vw,275px);width:auto;max-width:100%;object-fit:contain}
+@media(max-width:650px){
+ body.view-home .home-identity{grid-template-columns:minmax(0,1fr) 28%}
+ body.view-home .home-identity .home-photo{width:100%;height:auto;align-self:center}
+ body.view-home .home-identity .home-brand{flex-wrap:wrap;padding:16px;gap:8px}
+ body.view-home .home-identity h1{font-size:clamp(1.15rem,4vw,1.55rem)}
+}
 #app:has(main > .login) {
   min-height: 100dvh;
   display: flex;

@@ -59,7 +59,7 @@ function updateIdleClock(){
    clock.style.cssText='display:inline-block;white-space:nowrap;font:600 .875rem/1.5 system-ui,sans-serif;font-variant-numeric:tabular-nums;color:#173f44;background:#e8f3ef;border-radius:.5rem;padding:.3rem .55rem;margin-inline-end:.45rem;vertical-align:middle';
    const group=document.createElement('span');group.style.cssText='display:inline-flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:.25rem';button.before(group);const badge=document.createElement('span');badge.className='current-role';badge.style.cssText='font-weight:600;color:#173f44;background:#e8f3ef;border-radius:.5rem;padding:.3rem .55rem';group.append(badge,clock,button);
  }
- const badge=clock.previousElementSibling;badge.textContent=roleLabel?'登入角色：'+roleLabel:'';badge.hidden=!roleLabel;
+ const badge=clock.previousElementSibling;badge.textContent=roleLabel && route()!=='home'?'登入角色：'+roleLabel:roleLabel;badge.hidden=!roleLabel;
  const left=Math.max(0,Math.ceil((Number(sessionStorage.getItem(idleKey))+idleLimit-Date.now())/1000));
  clock.textContent='距離登出：'+String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0');
  clock.style.background=left<=60?'#ffe6a5':'#e8f3ef';
