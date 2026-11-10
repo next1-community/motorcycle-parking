@@ -89,7 +89,14 @@ function homeView(){
     completed:['選位完成','查看選位結果']
   };
   const [status,action]=phases[state.event.phase] || ['作業進行中','開啟本年度作業'];
-  const upcomingCard=name=>`<section class="home-module home-upcoming"><h3>${name}</h3><small>即將推出</small></section>`;
+  const icons = {
+    '機車位': '<circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="M2 13h6l3 4h3l3-5-2-7h-3m4 3h3M4 10h5"/>',
+    '汽車位': '<path d="m4 11 2-6h12l2 6m-16 0h16l1 2v5H3v-5zM5 18v2m14-2v2m-13-6h2m8 0h2"/>',
+    '社區弱電設備': '<rect x="4" y="3" width="16" height="7" rx="2"/><path d="M7 6.5h4m5 0h1M12 10v5m-7 3v-3h14v3"/><circle cx="5" cy="20" r="1.5"/><circle cx="19" cy="20" r="1.5"/>',
+    '社區資產': '<path d="m3 7 9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4m-9 4v10M8 5l9 4"/>'
+  };
+  const moduleLabel = name => `<span class="module-label"><svg aria-hidden="true" focusable="false" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${icons[name]}</svg>${name}</span>`;
+  const upcomingCard=name=>`<section class="home-module home-upcoming"><h3>${moduleLabel(name)}</h3><small>即將推出</small></section>`;
   return `<style>
   .community-home{max-width:1100px;margin:20px auto;color:#17374b}
   .view-home .home-account-bar{display:flex;justify-content:flex-end;padding-block:8px;min-height:0}
@@ -125,6 +132,7 @@ function homeView(){
   .module-entry{display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:#124f48;min-height:82px;font-size:1.35rem;font-weight:700}
   .module-entry:hover,.module-entry:focus-visible{border-color:#126157;background:#f1f8f5}
   .archive-result{background:#e1f0ea;color:#13473e;padding:10px 16px;font-size:1.25rem;font-weight:700;position:sticky;top:0;z-index:3}.archive-plan-body .parking-tile[aria-pressed=true]{background:#ffda47;outline:3px solid #244d4a}.archive-plan-body .parking-tile{cursor:pointer}
+  .module-label{display:inline-flex;align-items:center;gap:.7rem}.module-label svg{flex:none}
   .module-nav{display:flex;flex-wrap:wrap;gap:18px;margin:20px 0}
   </style><section class="community-home">${route()==='parking'?`
   <a class="module-nav" href="#/home">← 管理首頁</a><div class="home-banner"><h1>機車位管理</h1><button id="logout">登出</button></div>
@@ -137,7 +145,7 @@ function homeView(){
   <a class="home-module module-entry" href="${pageLink('display')}" target="_blank" rel="noopener">開啟會議投放畫面 ↗</a></div>`:`
   <div class="home-identity"><div class="home-brand"><img src="logo.jpg" alt="勝輝 NEXT1 社區標誌"><div><small>社區物業管理中心 · 測試版</small><h1>NEXT1社區管理系統</h1></div></div><img class="home-photo" src="testing/community-lobby.jpg" alt="社區大廳旋轉樓梯"></div>
   <h2 class="home-section-heading">車位與設備管理</h2><div class="home-grid">
-  <a class="home-module module-entry" href="#/parking">機車位 <span aria-hidden="true">→</span></a>
+  <a class="home-module module-entry" href="#/parking">${moduleLabel('機車位')} <span aria-hidden="true">→</span></a>
   ${upcomingCard('汽車位')}
   ${upcomingCard('社區弱電設備')}${upcomingCard('社區資產')}</div><div class="community-calendar"></div>`}</section>`;
 }
