@@ -5,7 +5,7 @@ const roles = {
 
 export async function mountAccounts(root, rpc) {
   if (await rpc('my_role', {}) !== 'system_admin' || !root.isConnected) return;
-  root.innerHTML = '<h2>系統管理</h2><button type="button" class="module-entry">帳號與權限 →</button>';
+  root.innerHTML = '<h2 class="home-section-heading">系統管理</h2><div class="home-grid"><button type="button" aria-haspopup="dialog" class="home-module module-entry"><span class="module-label"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 2 3 6v5c0 5 4 9 9 11 5-2 9-6 9-11V6z"/><path d="m8 12 3 3 5-6"/></svg>帳號與權限</span><span aria-hidden="true">→</span></button></div>';
   root.querySelector('button').onclick = async () => {
     const dialog = document.createElement('dialog');
     dialog.setAttribute('aria-label','帳號與權限');
