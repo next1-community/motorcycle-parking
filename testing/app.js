@@ -133,6 +133,10 @@ function homeView(){
   .module-entry:hover,.module-entry:focus-visible{border-color:#126157;background:#f1f8f5}
   .archive-result{background:#e1f0ea;color:#13473e;padding:10px 16px;font-size:1.25rem;font-weight:700;position:sticky;top:0;z-index:3}.archive-plan-body .parking-tile[aria-pressed=true]{background:#ffda47;outline:3px solid #244d4a}.archive-plan-body .parking-tile{cursor:pointer}
   .module-label{display:inline-flex;align-items:center;gap:.7rem}.module-label svg{flex:none}
+  .community-home .registration-tools{display:flex;align-items:center;flex-wrap:nowrap;gap:6px;padding-right:12px;border:1px solid #cadbd7;border-radius:14px;background:white}
+  .registration-tools a.module-entry{min-width:0;border:0;background:transparent}
+  #registrationQr{display:grid;place-items:center;width:44px;height:44px;flex:none;padding:0;color:#125f55;background:#eef6f3;border-radius:10px}
+  #registrationQr:hover,#registrationQr:focus-visible{background:#d9ede6;outline:2px solid #18685e}
   .module-nav{display:flex;flex-wrap:wrap;gap:18px;margin:20px 0}
   </style><section class="community-home">${route()==='parking'?`
   <a class="module-nav" href="#/home">← 管理首頁</a><div class="home-banner"><h1>機車位管理</h1><button id="logout">登出</button></div>
@@ -141,7 +145,7 @@ function homeView(){
   <p>${status}${state.event.phase==='selecting'?' · 目前第 '+Number(state.event.current_rank)+' 順位':''}</p><div class="home-actions"><a href="#/admin">${action} →</a></div></section>
   <h2 class="home-section-heading">查詢與現場作業</h2><div class="home-grid">
   <a class="home-module module-entry" href="#/admin?view=history">歷年中籤紀錄 →</a>
-  <div class="registration-tools"><a class="home-module module-entry" href="${pageLink('register')}" target="_blank" rel="opener">住戶登記申請 ↗</a><button type="button" id="registrationQr">登記 QR Code</button></div>
+  <div class="registration-tools"><a class="home-module module-entry" href="${pageLink('register')}" target="_blank" rel="opener">住戶登記申請 ↗</a><button type="button" id="registrationQr" aria-label="顯示登記 QR Code" title="顯示登記 QR Code" aria-haspopup="dialog"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M2 2h9v9H2zM4 4v5h5V4zM13 2h9v9h-9zM15 4v5h5V4zM2 13h9v9H2zM4 15v5h5v-5z"/><path d="M5 5h3v3H5zm11 0h3v3h-3zM5 16h3v3H5zm8-3h4v2h-2v3h-2zm6 0h3v4h-3zm-2 4h2v3h3v2h-5zm-4 3h2v2h-2z"/></svg></button></div>
   <a class="home-module module-entry" href="${pageLink('display')}" target="_blank" rel="noopener">開啟會議投放畫面 ↗</a></div>`:`
   <div class="home-identity"><div class="home-brand"><img src="logo.jpg" alt="勝輝 NEXT1 社區標誌"><div><small>社區物業管理中心 · 測試版</small><h1>NEXT1社區管理系統</h1></div></div><img class="home-photo" src="testing/community-lobby.jpg" alt="社區大廳旋轉樓梯"></div>
   <h2 class="home-section-heading">車位與設備管理</h2><div class="home-grid">
