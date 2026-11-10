@@ -1,4 +1,4 @@
-import {showFinance} from './finance.js';
+import {showFinance} from './finance.js?v=2';
 import {mountAccounts} from './accounts.js?v=account-form-4';
 import {mountCalendar} from './calendar.js?v=edit-1';
 import {startReveal, revealPage} from './rank-reveal.js?v=10';
@@ -310,7 +310,7 @@ function showRegistrationQr() {
 function bind(){const finance=document.querySelector('#finance');
   const entry=document.querySelector('#finance-entry');
   if(entry)rpc('my_role',{},true).then(role=>{
-    if(['manager','committee','system_admin'].includes(role))entry.innerHTML='<h2>社區財務</h2><div class="home-grid"><a class="home-module module-entry" href="#/home?view=finance">財務總覽與歷年比較 →</a></div>';
+    if(['manager','committee','system_admin'].includes(role))entry.innerHTML='<h2>社區財務</h2><div class="home-grid"><a class="home-module module-entry" href="'+location.pathname+location.search+'#/home?view=finance">財務總覽與歷年比較 →</a></div>';
   }).catch(()=>{});
   if(finance)(async()=>{
     await ensureSession();
