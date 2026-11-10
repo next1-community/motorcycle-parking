@@ -1,4 +1,4 @@
-import {mountAccounts} from './accounts.js?v=card-2';
+import {mountAccounts} from './accounts.js?v=account-form-4';
 import {mountCalendar} from './calendar.js?v=edit-1';
 import {startReveal, revealPage} from './rank-reveal.js?v=10';
 import {renderPublicFlow} from '../public-flow.mjs?v=20261107-compact-roster';
