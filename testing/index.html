@@ -15,6 +15,7 @@
   .view-display .map-shell,.view-display .readable-spot-grid {grid-column:1/-1;min-width:0}
 }
 .view-home .community-home .home-identity + h2,
+.view-home .community-home .staff-accounts > h2,
 .view-home .community-home .community-calendar > h2 {
   display: block;
   font-size: 1.2rem;
@@ -23,7 +24,7 @@
   line-height: 1.5;
   margin: 28px 0 16px;
 }
-.view-home .home-identity + h2::after { content: none; }
+.view-home .community-home :is(.home-section-heading, .community-calendar > h2)::after { content: none; }
 #app:has(main > .login) {
   min-height: 100dvh;
   display: flex;
