@@ -1,4 +1,4 @@
-import {showFinance} from './finance.js?v=deposits-1';
+import {showFinance} from './finance.js?v=overview-spacing-1';
 import {mountAccounts} from './accounts.js?v=account-form-4';
 import {mountCalendar} from './calendar.js?v=edit-1';
 import {startReveal, revealPage} from './rank-reveal.js?v=10';

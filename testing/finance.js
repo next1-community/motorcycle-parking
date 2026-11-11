@@ -18,19 +18,28 @@ function periods(data,year,key,step) {
 export function showFinance(root,data){
   const years=Object.keys(data).map(Number).sort();
   let year=years.at(-1), tab='overview', subject='電費';
-  const subjects=[...new Set(years.flatMap(y=>Object.keys(data[y].items)))];
+
   function render(){
     const r=data[year], n=r.expense.length, prev=data[year-1];
+    const priority = ['電費','水費','修繕費','管理服務費','清潔維護費','電梯保養費','保險費'];
+    const active = Object.entries(r.items).filter(([,values]) =>
+      values.slice(0,n).some(value => Number.isFinite(value) && value !== 0));
+    const ranked = active.slice().sort((a,b) =>
+      Math.abs(sum(b[1].slice(0,n))) - Math.abs(sum(a[1].slice(0,n))));
+    const subjects = [...new Set([
+      ...priority.filter(key => active.some(([name]) => name === key)),
+      ...ranked.slice(0,5).map(([key]) => key)
+    ])];
     const metric=(key,title)=>{
       const value=key==='balance'?r[key][n-1]:sum(r[key]);
       const base=prev&&(key==='balance'?prev[key][n-1]:sum(prev[key].slice(0,n)));
       const d=value-base;
       return '<article><small>'+title+'</small><strong>'+fmt(value)+'</strong><span>'+(prev?'較去年同期 '+(d>=0?'+':'')+fmt(d)+' 元'+(base?'（'+fmt(100*d/base)+'%）':''):'歷史起始年度')+'</span></article>';
     };
-    const compare=()=>{const ys=years.filter(y=>y<=year);
+    const compare=()=>{if (!subjects.length) return "<p>本期尚無支出紀錄。</p>"; const ys=years.filter(y=>y<=year);
       const valid=v=>Array.isArray(v)&&v.length>=n&&v.slice(0,n).every(Number.isFinite);
       const cur=r.items[subject], old=prev?.items[subject], title=safe(subject);
-      let insight='<p>缺少可比較的同期資料，暫不判讀增減。</p>';
+      let insight='<p>本期累計支出 '+fmt(sum(cur.slice(0,n)))+' 元。去年同期資料不足。</p>';
       if(valid(cur)&&valid(old)){
         const total=sum(cur.slice(0,n)), base=sum(old.slice(0,n)), delta=total-base;
         const changed=cur.slice(0,n).map((v,i)=>({i,d:v-old[i]}));
@@ -72,10 +81,12 @@ export function showFinance(root,data){
       const liquid=dep.land+dep.post,total=liquid+dep.fixed,share=total?100*liquid/total:0;
       funds=`<section><h2>社區資金現況</h2><p>最近已核對：${year} 年 ${dep.month} 月底</p><div class="fin-metrics"><article><small>銀行存款合計</small><strong>${fmt(total)} 元</strong></article><article><small>活存餘額</small><strong>${fmt(liquid)} 元</strong><span>占存款 ${total?fmt(share)+'%':'—'}</span></article><article><small>定存餘額</small><strong>${fmt(dep.fixed)} 元</strong><span>占存款 ${total?fmt(100-share)+'%':'—'}</span></article></div>${total?`<div aria-hidden="true" style="height:14px;border-radius:7px;background:linear-gradient(to right,#2376cd ${share}%,#128473 ${share}%)"></div>`:''}<details><summary>查看存款明細</summary><p>土地銀行活存：${fmt(dep.land)} 元<br>郵局活存：${fmt(dep.post)} 元<br>土地銀行定存（${fmt(dep.count)} 筆）：${fmt(dep.fixed)} 元</p><p>零用金尚無核實金額，未計入銀行存款。</p></details></section>`;
     }
-    const overviewStyle = `<style>#finance .fin-metrics{grid-template-columns:repeat(auto-fit,minmax(min(100%,195px),1fr))}#finance .fin-metrics article{border-top:3px solid #719c98}#finance .fin-metrics .net{background:#e8f3ef;border-top-color:#17645e}#finance .monthly-finance{margin-bottom:16px}#finance .flow-month{display:grid;grid-template-columns:3em minmax(0,1fr);align-items:center;gap:12px;border-top:1px solid #dfE7ec;padding:9px 0}#finance .flow-row{display:grid;grid-template-columns:2em minmax(0,1fr) 7ch;gap:10px;align-items:center;margin:3px 0;font-variant-numeric:tabular-nums}#finance .flow-row b{text-align:right}#finance .flow-track{height:16px;background:#f0f4f8;border-radius:4px;overflow:hidden}#finance .flow-track em{display:block;height:100%;border-radius:4px}#finance .fin-panels button[data-item] i{height:13px;border-radius:4px;background:#5670d7}#finance .amount{font-variant-numeric:tabular-nums}#finance .fin-panels{align-items:start}#finance .fin-panels section:last-child>p{border-left:3px solid #b87634;padding:6px 12px;background:#faf7f1}</style>`;
+    const overviewStyle = `<style>#finance .fin-period-summary{margin-block:16px}#finance .fin-period-summary>.fin-metrics{margin-bottom:0}#finance .fin-metrics{grid-template-columns:repeat(auto-fit,minmax(min(100%,195px),1fr))}#finance .fin-metrics article{border-top:3px solid #719c98}#finance .fin-metrics .net{background:#e8f3ef;border-top-color:#17645e}#finance .monthly-finance{margin-bottom:16px}#finance .flow-month{display:grid;grid-template-columns:3em minmax(0,1fr);align-items:center;gap:12px;border-top:1px solid #dfE7ec;padding:9px 0}#finance .flow-row{display:grid;grid-template-columns:2em minmax(0,1fr) 7ch;gap:10px;align-items:center;margin:3px 0;font-variant-numeric:tabular-nums}#finance .flow-row b{text-align:right}#finance .flow-track{height:16px;background:#f0f4f8;border-radius:4px;overflow:hidden}#finance .flow-track em{display:block;height:100%;border-radius:4px}#finance .fin-panels button[data-item] i{height:13px;border-radius:4px;background:#5670d7}#finance .amount{font-variant-numeric:tabular-nums}#finance .fin-panels{align-items:start}#finance .fin-panels section:last-child>p{border-left:3px solid #b87634;padding:6px 12px;background:#faf7f1}</style>`;
     const diffs=prev?Object.entries(r.items).map(([k,v])=>[k,sum(v)-sum((prev.items[k]||[]).slice(0,n))]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,5):[];
+    for (const [key] of diffs) if (active.some(([name])=>name===key) && !subjects.includes(key)) subjects.push(key);
+    if (!subjects.includes(subject)) subject = subjects[0];
     const notices=rules.flatMap(([k,step,min])=>periods(data,year,k,step).filter(p=>p.pct>=25&&p.diff>=min).map(p=>'<p><b>'+k+' · '+(step===2?(p.month-1)+'–':'')+p.month+' 月</b><br>'+fmt(p.amount)+' 元，較同期中位數增加 '+fmt(p.diff)+' 元（'+fmt(p.pct)+'%）</p>'));
-    root.innerHTML='<a href="'+location.pathname+location.search+'#/home">← 管理首頁</a><header><div><small>勝輝 NEXT1 社區</small><h1>社區財務</h1></div><label>年度 <select id="fin-year">'+years.map(y=>'<option '+(y===year?'selected':'')+'>'+y+'</option>').join('')+'</select></label></header><p>'+year+' 年 1 至 '+n+' 月｜金額單位：新臺幣元</p><nav>'+[['overview','財務總覽'],['history','歷年比較']].map(([v,t])=>'<button data-tab="'+v+'" aria-pressed="'+(v===tab)+'">'+t+'</button>').join('')+'</nav>'+(tab==='history'?'<section><h2>同期支出分析</h2>'+compare()+'</section>':overviewStyle+funds+'<h2>本年度收入與支出</h2><div class="fin-metrics">'+metric('income','累計收入')+metric('expense','累計支出')+`<article class="net"><small>本期收支差額</small><strong>${fmt(net)}</strong><span>${net>0?'收入高於支出':net<0?'支出高於收入':'收支持平'}</span></article>`+metric('balance','月底累計結餘')+'</div>'+trend+'<div class="fin-panels"><section><h2>哪些支出增加最多？</h2>'+ (diffs.length?diffs.map(([k,d])=>'<button data-item="'+safe(k)+'"><span>'+safe(k)+'</span><b>+'+fmt(d)+'</b><i style="width:'+Math.round(100*d/diffs[0][1])+'%"></i></button>').join(''):'尚無前一年度可比較')+'</section><section><h2>重要提醒</h2>'+(notices.join('')||(year<2025?'可比較歷史不足兩年':'本期沒有重要提醒'))+'<details><summary>查看水電費提醒規則</summary>以前二至三年同期中位數為基準。高出 25%，且電費單月至少增加 2,000 元，或水費雙月至少增加 300 元時提醒。水費以財報中列為「水費」的金額計算。</details></section></div>');
+    root.innerHTML='<a href="'+location.pathname+location.search+'#/home">← 管理首頁</a><header><div><small>勝輝 NEXT1 社區</small><h1>社區財務</h1></div><label>年度 <select id="fin-year">'+years.map(y=>'<option '+(y===year?'selected':'')+'>'+y+'</option>').join('')+'</select></label></header><p>'+year+' 年 1 至 '+n+' 月｜金額單位：新臺幣元</p><nav>'+[['overview','財務總覽'],['history','歷年比較']].map(([v,t])=>'<button data-tab="'+v+'" aria-pressed="'+(v===tab)+'">'+t+'</button>').join('')+'</nav>'+(tab==='history'?'<section><h2>同期支出分析</h2>'+compare()+'</section>':overviewStyle+funds+'<section class="fin-period-summary"><h2>本年度收入與支出</h2><div class="fin-metrics">'+metric('income','累計收入')+metric('expense','累計支出')+`<article class="net"><small>本期收支差額</small><strong>${fmt(net)}</strong><span>${net>0?'收入高於支出':net<0?'支出高於收入':'收支持平'}</span></article>`+metric('balance','月底累計結餘')+'</div></section>'+trend+'<div class="fin-panels"><section><h2>哪些支出增加最多？</h2>'+ (diffs.length?diffs.map(([k,d])=>'<button data-item="'+safe(k)+'"><span>'+safe(k)+'</span><b>+'+fmt(d)+'</b><i style="width:'+Math.round(100*d/diffs[0][1])+'%"></i></button>').join(''):'尚無前一年度可比較')+'</section><section><h2>重要提醒</h2>'+(notices.join('')||(year<2025?'可比較歷史不足兩年':'本期沒有重要提醒'))+'<details><summary>查看水電費提醒規則</summary>以前二至三年同期中位數為基準。高出 25%，且電費單月至少增加 2,000 元，或水費雙月至少增加 300 元時提醒。水費以財報中列為「水費」的金額計算。</details></section></div>');
     root.querySelector('#fin-year').onchange=e=>{year=Number(e.target.value);render()};
     root.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render()});
     root.querySelectorAll('[data-item]').forEach(b=>b.onclick=()=>{subject=b.dataset.item;tab='history';render()});
