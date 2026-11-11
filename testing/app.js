@@ -314,7 +314,7 @@ function showRegistrationQr() {
 function bind(){const finance=document.querySelector('#finance');
   const entry=document.querySelector('#finance-entry');
   if(entry)rpc('my_role',{},true).then(role=>{
-    if(['manager','committee','system_admin'].includes(role))entry.innerHTML='<h2 class="home-section-heading">社區財務</h2><div class="home-grid"><a class="home-module module-entry" href="'+location.pathname+location.search+'#/home?view=finance"><span class="module-label"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 3v18h18M7 16v-4m5 4V7m5 9V9"/></svg>財務總覽與歷年比較</span><span aria-hidden="true">→</span></a></div>';
+    if(['manager','committee','system_admin'].includes(role))entry.innerHTML='<h2 class="home-section-heading">社區財務</h2><div class="home-grid"><a class="home-module module-entry" href="'+location.pathname+location.search+'#/home?view=finance"><span class="module-label"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 3v18h18M7 16v-4m5 4V7m5 9V9"/></svg>財務概況與分析</span><span aria-hidden="true">→</span></a></div>';
   }).catch(()=>{});
   if(finance)(async()=>{
     await ensureSession();
