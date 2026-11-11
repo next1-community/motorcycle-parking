@@ -88,7 +88,7 @@ function header(loginPage=false){if (state?.is_admin && ['home','parking','admin
   }
   const resident=route()==='register';return `<header><a class="brand" href="${resident?'#/register':'#/home'}"><img src="logo.jpg" alt="NEXT1 社區標誌"><span><b>勝輝 NEXT1 社區${testing?' · 測試版':''}</b><small>${loginPage||route()==='home'?'社區物業管理中心':'MOTORCYCLE PARKING · 2027'}</small></span></a> ${loginPage||resident||['home','parking'].includes(route())?'':`<nav aria-label="管理功能"><a href="#/home">管理首頁</a><a href="#/parking">機車位管理</a><a href="#/admin" class="${route()==='admin'&&adminSection==='current'?'active':''}">本年度抽籤作業</a><a href="#/admin?view=history" class="${route()==='admin'&&adminSection==='history'?'active':''}">歷年中籤紀錄</a><a href="${pageLink('register')}" target="_blank" rel="opener">住戶登記申請 ↗</a><a href="${pageLink('display')}" id="publicNavLink" target="_blank" rel="noopener">開啟會議投放畫面 ↗</a></nav>`}</header>${resident||testing?'':`<div class="testbar ${healthy?'':'offline'}"><span><b>2027 年度</b>　機車位登記與公開選位</span><span><i class="dot"></i>${mode==='demo'?'現場演練模式':healthy?'系統連線正常':'系統連線中'}　${route()==='admin'?`<button id="switchMode">${mode==='demo'?'返回年度作業':'進入演練模式'}</button>`:''}</span></div>`}`;}
 
-function footer(){if(route()==='home' && state?.is_admin)return '<footer class="property-footer"><b>NEXT1 社區物業管理中心</b><nav aria-label="頁尾導覽"><a href="#/admin?view=history">歷年中籤紀錄</a><button id="homeTop">回到頁首 ↑</button></nav></footer>';if(['home','parking'].includes(route()))return '';if(route()==='register')return `<footer class="resident-footer">勝輝 NEXT1 公寓大廈管理委員會</footer>`;return `<footer><span>勝輝 NEXT1 公寓大廈管理委員會｜2027 機車位登記與選位系統</span><span>1、2 號不開放，3 號指定使用 · 4～62 號共 59 格 · 依戶別公開抽籤</span></footer>`;}
+function footer(){if(['home','parking','admin'].includes(route()) && state?.is_admin)return '<footer class="property-footer"><b>NEXT1 社區物業管理中心</b><nav aria-label="頁尾導覽"><a href="#/admin?view=history">歷年中籤紀錄</a><button id="homeTop">回到頁首 ↑</button></nav></footer>';if(['home','parking'].includes(route()))return '';if(route()==='register')return `<footer class="resident-footer">勝輝 NEXT1 公寓大廈管理委員會</footer>`;return `<footer><span>勝輝 NEXT1 公寓大廈管理委員會｜2027 機車位登記與選位系統</span><span>1、2 號不開放，3 號指定使用 · 4～62 號共 59 格 · 依戶別公開抽籤</span></footer>`;}
 function stats(){const n=state.registrations.reduce((a,r)=>a+r.quantity,0),used=state.lots.filter(l=>l.spot).length;return `<div class="stats"><div class="stat"><small>已登記戶別</small><strong>${state.registrations.length}<small> 戶</small></strong></div><div class="stat"><small>抽籤名額</small><strong>${n}<small> 個</small></strong></div><div class="stat"><small>已選車位</small><strong>${used}<small> 格</small></strong></div><div class="stat green"><small>尚可選擇</small><strong>${59-used}<small> 格</small></strong></div></div>`;}
 function phaseFlow(){
  const steps=[['registration','確認登記名單'],['locked','鎖定名單'],['drawn','公布抽籤順位'],['selecting','依序選位'],['completed','確認選位結果']];
@@ -173,9 +173,7 @@ function homeView(){
   .view-home .home-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .view-home .home-module{min-height:74px;padding:18px 22px}
   .view-home .home-grid>:is(a,button.module-entry){border-left:5px solid #187269}
-  .view-home .property-footer{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:#173f44;color:white;box-sizing:border-box;width:100%;max-width:none;padding:18px max(28px,calc((100% - 1100px)/2));margin:20px 0 0}
-  @media(max-width:850px){.view-home .property-footer{padding-inline:18px}}
-  .property-footer nav{display:flex;align-items:center;gap:18px}.property-footer a{color:white;text-decoration:underline}.property-footer button{background:transparent;color:white;border:1px solid #9db5b4;padding:6px 12px}
+
   @media(max-width:600px){.view-home .home-grid{grid-template-columns:1fr}}
   .home-account-bar nav{display:flex;justify-content:flex-end}
   .home-identity{display:grid;grid-template-columns:1.2fr 1fr;overflow:hidden;border:1px solid #cad8d4;border-radius:18px;background:white}
@@ -186,8 +184,7 @@ function homeView(){
   @media(max-width:650px){.home-identity{grid-template-columns:1fr}.home-photo{height:110px}}
   .home-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:clamp(24px,4vw,52px);border-radius:18px;background:linear-gradient(90deg,#103441 5%,rgba(16,52,65,.75) 55%,transparent),url("testing/community-lobby.jpg") center 48%/cover}
   .home-banner h1{color:white;margin:0;font-size:clamp(24px,4vw,42px)}
-  .community-home .home-section-heading{display:flex;align-items:center;gap:14px;margin:clamp(24px,3vw,36px) 0 12px;color:#40565d;font-size:1.05rem;font-weight:600;line-height:1.5}
-  .home-section-heading::after{content:"";height:1px;flex:1;background:#d1dcda}
+
   .home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:16px}
   .home-module{padding:22px;border:1px solid #c4d7d3;border-radius:14px;background:white}
   .home-module h3{font-size:1.35rem;margin:0}

@@ -3,7 +3,7 @@
 <meta name="description" content="社區物業管理中心專用入口">
 <meta property="og:type" content="website">
 <meta property="og:title" content="NEXT1 社區管理系統｜測試版">
-<meta property="og:description" content="社區物業管理中心專用入口"><link rel="stylesheet" href="testing/style.css?v=testing-flow-19"><script type="module" src="testing/app.js?v=account-header-1"></script><link rel="stylesheet" href="testing/rank-reveal.css"><style>.view-display .map-controls > span:first-child,.view-display .map-source{display:none}.view-display .map-controls{justify-content:flex-end}@media (min-width: 1000px) {
+<meta property="og:description" content="社區物業管理中心專用入口"><link rel="stylesheet" href="testing/style.css?v=testing-flow-19"><script type="module" src="testing/app.js?v=shared-layout-3"></script><link rel="stylesheet" href="testing/rank-reveal.css"><style>.view-display .map-controls > span:first-child,.view-display .map-source{display:none}.view-display .map-controls{justify-content:flex-end}@media (min-width: 1000px) {
   .view-display .card:has(> .parking-counts) {display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-content:start;align-items:center;gap:10px 12px}
   .view-display .card:has(> .parking-counts) .map-head {display:contents}
   .view-display .map-head h2 {grid-area:1/1;white-space:nowrap}
@@ -14,18 +14,9 @@
   .view-display .map-controls {grid-area:2/3;margin:0}
   .view-display .map-shell,.view-display .readable-spot-grid {grid-column:1/-1;min-width:0}
 }
-.view-home .community-home .home-identity + h2,
-.view-home .community-home #finance-entry > h2,
-.view-home .community-home .staff-accounts > h2,
-.view-home .community-home .community-calendar > h2 {
-  display: block;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #17394a;
-  line-height: 1.5;
-  margin: 28px 0 16px;
+body:is(.view-home,.view-parking,.view-admin) :is(.home-section-heading,.community-calendar > h2) {
+  display:block; margin:28px 0 16px; font-size:1.25rem; font-weight:700; line-height:1.5; color:#17394a;
 }
-.view-home .community-home :is(.home-section-heading, .community-calendar > h2)::after { content: none; }
 body:is(.view-home,.view-parking,.view-admin) header.home-account-bar{background:#173f44;color:white;border:0;display:flex;align-items:center;justify-content:space-between;min-height:0;height:auto;padding:6px clamp(16px,4vw,64px);line-height:1.25}
 body:is(.view-home,.view-parking,.view-admin) .home-account-bar nav{padding:0;margin:0;min-height:0}
 body:is(.view-home,.view-parking,.view-admin) .home-account-bar nav>span{gap:.9rem!important;align-items:center}
@@ -69,21 +60,25 @@ body.view-home .home-grid :is(.module-entry, h3) {
   font-size: 1.125rem;
   font-weight: 600;
 }
-body.view-home footer.property-footer {
+footer.property-footer {
+  display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;
+  width:100%; max-width:none; box-sizing:border-box; margin:20px 0 0;
+  padding:18px max(18px,calc((100% - 1100px)/2));
   background: #e3ede9;
   color: #244741;
   border-top: 1px solid #c5d7d1;
   font: 400 .875rem/1.55 Arial, "Microsoft JhengHei", "PingFang TC", sans-serif;
 }
-body.view-home .property-footer :is(a, button) {color: inherit; font: inherit}
-body.view-home .property-footer button {border-color: #a6bdb5}
+.property-footer nav {display:flex;align-items:center;gap:18px}
+.property-footer :is(a, button) {color: inherit; font: inherit}
+.property-footer button {border-color: #a6bdb5}
 @media (max-width:650px) {
   body.view-home .home-identity {grid-template-columns: minmax(0, 1fr) 33%}
   body.view-home .home-brand {padding: 16px; flex-direction: column; align-items: flex-start; justify-content: center; gap: 6px}
   body.view-home .home-brand h1 {font-size: clamp(1.3rem, 5vw, 1.65rem)}
   body.view-home .home-identity .home-photo {height: 100%; min-height: 155px}
-  body.view-home footer.property-footer {align-items: flex-start; flex-direction: column; gap: 8px; text-align: left}
-  body.view-home .property-footer nav {flex-wrap: wrap; gap: 16px}
+  footer.property-footer {align-items: flex-start; flex-direction: column; gap: 8px; text-align: left}
+  .property-footer nav {flex-wrap: wrap; gap: 16px}
 }
 .accounts-dialog {box-sizing:border-box; overscroll-behavior:contain}
 .accounts-dialog .account-heading, .accounts-dialog .account-actions {display:flex; align-items:center; justify-content:space-between; gap:12px}
