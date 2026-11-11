@@ -1,3 +1,4 @@
+import {showVendors} from './vendors.js';
 import {showFinance} from './finance.js?v=overview-spacing-1';
 import {mountAccounts} from './accounts.js?v=account-form-4';
 import {mountCalendar} from './calendar.js?v=edit-1';
@@ -149,6 +150,7 @@ function changeControls(event, lot) {
 }
 function homeView(){
   if(mode==='cloud' && !state.is_admin)return loginView();
+  if (['#/home?view=vendors','#/home?view=renewals'].includes(location.hash)) return '<section id="vendors">正在讀取…</section>';
   if(location.hash==='#/home?view=finance')return '<section id="finance">正在讀取社區財務…</section>';
   const phases={
     registration:['開放登記','查看登記名單'],locked:['名單已鎖定','前往抽籤'],
@@ -312,7 +314,17 @@ function bind(){const finance=document.querySelector('#finance');
   const entry=document.querySelector('#finance-entry');
   if(entry)rpc('my_role',{},true).then(role=>{
     if(['manager','committee','system_admin'].includes(role))entry.innerHTML='<h2 class="home-section-heading">社區財務</h2><div class="home-grid"><a class="home-module module-entry" href="'+location.pathname+location.search+'#/home?view=finance"><span class="module-label"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 3v18h18M7 16v-4m5 4V7m5 9V9"/></svg>財務概況與分析</span><span aria-hidden="true">→</span></a></div>';
+    if (['manager','committee','system_admin'].includes(role)) {
+      const links=[['vendors','簽約廠商'],['renewals','合約到期追蹤']];
+      const cards=links.map(([view,label])=>`<a class="home-module module-entry" href="${location.pathname}${location.search}#/home?view=${view}"><span class="module-label">${label}</span><span aria-hidden="true">→</span></a>`).join('');
+      entry.insertAdjacentHTML('afterend','<section style="margin-block-start:2rem"><h2 class="home-section-heading">廠商與合約</h2><div class="home-grid">'+cards+'</div></section>');
+    }
   }).catch(()=>{});
+  const vendors=document.querySelector('#vendors');
+  if(vendors)rpc('my_role',{},true).then(role=>{
+    if(['manager','committee','system_admin'].includes(role))showVendors(vendors,location.hash.endsWith('renewals'));
+    else vendors.textContent='此帳號無權查看廠商合約。';
+  }).catch(()=>vendors.textContent='無法讀取權限，請重新登入。');
   if(finance)(async()=>{
     await ensureSession();
     const res=await fetch(config.url+'/rest/v1/next1_finance_snapshot?id=eq.1&select=reports',{headers:{apikey:config.key,Authorization:'Bearer '+session.access_token}});
