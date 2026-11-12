@@ -11,7 +11,7 @@
 #app .portal-layout .home-module{min-height:70px;padding:14px 18px;border-radius:13px}
 #app .portal-layout :is(.home-section-heading,.community-calendar>h2){margin:22px 0 10px;font-size:22px;line-height:1.4}
 .portal-layout .module-label i{background:#e5f3ed;color:#11766b;border-radius:8px;padding:1px 8px;font-style:normal}
-#app footer.community-signature{display:block;background:#fafbf8;color:#536366;border-top:1px solid #dce3df;padding:0;min-height:0;margin:32px 0 0}
+#app footer.community-signature{display:block;width:100%;max-width:none;box-sizing:border-box;background:#fafbf8;color:#536366;border-top:1px solid #dce3df;padding:0;min-height:0;margin:32px 0 0}
 .community-signature div{max-width:1240px;margin:auto;display:flex;align-items:center;gap:9px;padding:9px clamp(16px,3vw,32px);font-size:14px}
 .community-signature img{object-fit:contain;mix-blend-mode:multiply}
 @media(max-width:760px){.portal-layout{display:block}#app .portal-layout .home-grid{grid-template-columns:1fr}}
