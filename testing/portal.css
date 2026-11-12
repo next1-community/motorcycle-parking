@@ -1,0 +1,21 @@
+#app {color:#163e43;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei",sans-serif}
+#app .community-cover {background:linear-gradient(90deg,rgba(10,39,42,.95),rgba(10,39,42,.78) 44%,rgba(10,39,42,.12)),url("community-lobby.jpg") center 48%/cover;border-radius:16px;padding:clamp(24px,4vw,54px);color:white;margin:12px 0 20px}
+#app .community-cover :is(h1,p,small,label){color:white}
+#app .community-cover h1{font-size:clamp(32px,5vw,62px);line-height:1.15;margin:0}
+#app .community-cover p{margin:12px 0 0}
+.cover-action{display:inline-block;background:white;color:#173e42;border-radius:24px;padding:8px 18px;margin-top:18px;font-weight:650;text-decoration:none}
+#app .community-home{max-width:1240px}
+.portal-layout{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:28px;align-items:start}
+#app .portal-layout .cal-layout{display:block}
+#app .portal-layout .home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#app .portal-layout .home-module{min-height:70px;padding:14px 18px;border-radius:13px}
+#app .portal-layout :is(.home-section-heading,.community-calendar>h2){margin:22px 0 10px;font-size:22px;line-height:1.4}
+.portal-layout .module-label i{background:#e5f3ed;color:#11766b;border-radius:8px;padding:1px 8px;font-style:normal}
+#app footer.community-signature{display:block;background:#fafbf8;color:#536366;border-top:1px solid #dce3df;padding:0;min-height:0;margin:32px 0 0}
+.community-signature div{max-width:1240px;margin:auto;display:flex;align-items:center;gap:9px;padding:9px clamp(16px,3vw,32px);font-size:14px}
+.community-signature img{object-fit:contain;mix-blend-mode:multiply}
+@media(max-width:760px){.portal-layout{display:block}#app .portal-layout .home-grid{grid-template-columns:1fr}}
+.mobile-agenda{display:none}
+@media(max-width:760px){.mobile-agenda{display:block;background:white;border:1px solid #d4e0da;border-radius:13px;padding:12px 16px}.mobile-agenda p{margin:8px 0 0}}
+#app :is(.view-admin,.view-register) .pagehead,.view-admin #app .pagehead,.view-register #app .pagehead{background:linear-gradient(90deg,#103a3ef2,#103a3ea6),url("community-lobby.jpg") center 48%/cover;color:white;border-radius:16px;padding:clamp(24px,4vw,54px)}
+:is(.view-admin,.view-register) #app .pagehead :is(h1,p,.eyebrow){color:white}

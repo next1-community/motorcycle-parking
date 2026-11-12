@@ -16,6 +16,12 @@ export async function mountCalendar(root, request) {
     }
     const list = entries.filter(e=>e.day===selected);
     root.innerHTML = '<h2>社區行事曆</h2><div class="cal-layout"><section><div class="cal-tools"><button data-month="-1" aria-label="上個月">‹</button><b>'+start.getFullYear()+' 年 '+(start.getMonth()+1)+' 月</b><button data-month="1" aria-label="下個月">›</button><button data-today>今天</button></div><div class="cal-grid">'+Array.from('日一二三四五六',v=>'<strong>'+v+'</strong>').join('')+cells+'</div></section><section class="cal-agenda"><div class="cal-tools"><h3>'+selected.slice(5).replace('-',' 月 ')+' 日記事</h3><button data-add>＋ 新增記事</button></div><div role="status">'+(message?escapeText(message):list.length?'':'當日尚無記事')+'</div>'+list.map(e=>'<article><small>'+escapeText(e.at_time?.slice(0,5)||'全天')+'</small><b>'+(e.reminder?'<span aria-label="需要提醒">🔔</span> ':'')+escapeText(e.title)+'</b><p>'+escapeText(e.note)+'</p><div><button data-edit="'+escapeText(e.id)+'">編輯</button> <button data-delete="'+escapeText(e.id)+'">刪除</button></div></article>').join('')+'<div class="cal-form"></div></section></div>';
+    let summary = root.closest('.portal-layout')?.previousElementSibling;
+    if (summary?.classList.contains('mobile-agenda') && selected.slice(0,7) === today().slice(0,7)) {
+      const notes = entries.filter(e=>e.day===today());
+      summary.querySelector('summary').textContent = loading ? '今日記事 · 讀取中' : message || '今日記事 · '+notes.length+' 件';
+      summary.querySelector('p').textContent = notes.map(e=>[e.at_time?.slice(0,5), e.title].filter(Boolean).join('　')).join('／') || (loading || message ? '' : '當日尚無記事');
+    }
   }
   async function load() {
     const seq = ++generation;

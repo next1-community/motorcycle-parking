@@ -40,7 +40,7 @@ export function showVendors(root, reminders) {
     body:has(#vendors) .property-footer button{min-height:32px;padding:4px 10px}
     #vendors .expiry{display:inline-block;padding:.15rem .65rem;border-radius:1rem;background:#e2f3ec;color:#075f49;white-space:nowrap}
     #vendors .soon{background:#ffe5bd;color:#874000} #vendors .unknown{background:#eeeaf9;color:#584882}
-    </style><a href="${home}#/home">← 管理首頁</a><h1>廠商與合約</h1>
+    </style><a href="${home}#/home">管理首頁</a> ／ 社區營運<div class="community-cover"><h1>廠商與合約</h1><p>掌握合約期限與服務費用，提前安排續約。</p><a class="cover-action" href="${home}#/home?view=renewals">查看近期到期 →</a></div>
     <p>介面預覽 · 以下廠商、金額與期間均為示範資料</p>
     <nav class="toolbar"><a class="button" href="${home}#/home?view=vendors">簽約廠商</a>
     <a class="button" href="${home}#/home?view=renewals">合約到期追蹤</a></nav>
