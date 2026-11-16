@@ -153,6 +153,7 @@ function changeControls(event, lot) {
 function homeView(){
   if(mode==='cloud' && !state.is_admin)return loginView();
   if (['#/home?view=vendors','#/home?view=renewals'].includes(location.hash)) return '<section id="vendors">正在讀取…</section>';
+  if(location.hash==='#/home?view=rules')return '<section class="card" id="rulesReader"><a href="#/home">← 管理首頁</a><h1>規約查詢</h1><div>正在讀取…</div></section>';
   if(location.hash==='#/home?view=finance')return '<section id="finance">正在讀取社區財務…</section>';
   const phases={
     registration:['開放登記','查看登記名單'],locked:['名單已鎖定','前往抽籤'],
@@ -318,9 +319,32 @@ function bind(){const finance=document.querySelector('#finance');
   if(entry)rpc('my_role',{},true).then(role=>{
     const links = ['manager','committee','system_admin'].includes(role)
       ? [['finance','▥','社區財務'],['vendors','▤','廠商與合約']] : [];
+    if (['manager','committee','system_admin','security'].includes(role)) links.push(['rules','▤','規約查詢']);
     const cards = links.map(([view,icon,label]) => `<a class="home-module module-entry" href="${location.pathname}${location.search}#/home?view=${view}"><span class="module-label"><i aria-hidden="true">${icon}</i>${label}</span><span aria-hidden="true">→</span></a>`).join('');
-    entry.innerHTML = '<h2 class="home-section-heading">社區營運</h2><div class="home-grid">'+cards+'<section class="home-module home-upcoming"><h3>規約查詢</h3><small>即將推出</small></section></div>';
+    entry.innerHTML = '<h2 class="home-section-heading">社區營運</h2><div class="home-grid">'+cards+'</div>';
   }).catch(()=>{});
+  const reader=document.querySelector('#rulesReader div');
+  if(reader)(async()=>{
+    await ensureSession();
+    const response=await fetch(config.url+'/rest/v1/next1_rules_library?select=sections&order=id',{
+      headers:{apikey:config.key,Authorization:'Bearer '+session.access_token},cache:'no-store'
+    });
+    if(!response.ok)throw Error();
+    const documents=await response.json();
+    reader.textContent=documents.length?'':'目前沒有可閱讀的規約。';
+    for(const {sections} of documents){
+      const group=document.createElement('details');
+      const title=document.createElement('summary');
+      title.textContent=sections[0][1];
+      group.append(title);
+      for(const [tag,content] of sections.slice(1)){
+        const block=document.createElement(['h2','h3','h4'].includes(tag)?tag:'p');
+        block.textContent=content;
+        group.append(block);
+      }
+      reader.append(group);
+    }
+  })().catch(()=>reader.textContent='無法讀取規約，請確認登入狀態與閱讀權限。');
   const vendors=document.querySelector('#vendors');
   if(vendors)rpc('my_role',{},true).then(role=>{
     if(['manager','committee','system_admin'].includes(role))showVendors(vendors,location.hash.endsWith('renewals'));
