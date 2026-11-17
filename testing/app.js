@@ -337,11 +337,57 @@ function bind(){const finance=document.querySelector('#finance');
       const title=document.createElement('summary');
       title.textContent=sections[0][1];
       group.append(title);
-      for(const [tag,content] of sections.slice(1)){
-        const block=document.createElement(['h2','h3','h4'].includes(tag)?tag:'p');
+      const article=document.createElement('article');
+      article.className='rule-text';
+      const nav=document.createElement('nav');
+      nav.setAttribute('aria-label','文件目錄');
+      const links=document.createElement('div');
+      const rows=sections.slice(1);
+      const toc=rows.findIndex(([,text])=>/^目\s*錄$/.test(text.trim()));
+      let end=toc+1;
+      while(toc>=0 && end<rows.length && /\d$/.test(rows[end][1].trim())) end++;
+      const appendixKeys=new Set(rows.slice(toc+1,end).map(([,value])=>value.match(/^附件[一二三四五六七八九十]+(?:之[一二三四五六七八九十]+)?/)?.[0]).filter(Boolean));
+      let meta;
+      for(let i=0;i<rows.length;i++){
+        if(toc>=0 && i>=toc && i<end) continue;
+        const [tag,content]=rows[i];
+        const text=content.trim();
+        if(['文件類別','文件狀態','制定及修訂機關','施行日期'].includes(text) && i+1<rows.length){
+          if(!meta){meta=document.createElement('dl');article.append(meta);}
+          const pair=document.createElement('div');
+          const term=document.createElement('dt');
+          const value=document.createElement('dd');
+          term.textContent=text;
+          value.textContent=rows[++i][1];
+          pair.append(term,value);
+          meta.append(pair);
+          continue;
+        }
+        const chapter=/^第[一二三四五六七八九十百\d]+章(?:\s|$)/.test(text);
+        const clause=/^第[一二三四五六七八九十百\d]+條(?:\s|$)/.test(text);
+        const key=text.match(/^附件[一二三四五六七八九十]+(?:之[一二三四五六七八九十]+)?(?=\s|$)/)?.[0];
+        const appendix=appendixKeys.delete(key);
+        const heading=chapter || appendix?'h3':clause?'h4':['h2','h3','h4'].includes(tag)?tag:'p';
+        const block=document.createElement(heading);
         block.textContent=content;
-        group.append(block);
+        if(i===0 || i===1) block.className=i===0?'rule-publisher':'rule-name';
+        if(chapter || appendix || (toc<0 && clause)){
+          const jump=document.createElement('button');
+          jump.type='button';
+          jump.textContent=text;
+          block.tabIndex=-1;
+          jump.onclick=()=>{block.focus({preventScroll:true});block.scrollIntoView({block:'start'});};
+          links.append(jump);
+        }
+        article.append(block);
       }
+      if(links.childElementCount){
+        const label=document.createElement('strong');
+        label.textContent='快速目錄';
+        nav.append(label,links);
+        article.querySelector('.rule-name')?.after(nav);
+      }
+      group.append(article);
       reader.append(group);
     }
   })().catch(()=>reader.textContent='無法讀取規約，請確認登入狀態與閱讀權限。');

@@ -60,3 +60,21 @@
   #rulesReader > div { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   #rulesReader summary { padding: 14px; min-height: 80px; gap: 12px; }
 }
+
+#rulesReader details > article.rule-text {
+  width: min(46rem, calc(100% - 2rem)); margin: 0 auto;
+  padding: 0 0 2rem; color: #253e41; font-size: 1rem; line-height: 1.85;
+}
+.rule-text p { margin: .45em 0; }
+.rule-text .rule-publisher { color: #506b6b; font-size: .88rem; }
+.rule-text .rule-name { font-size: 1.6rem; font-weight: 700; margin: 0 0 .8rem; }
+.rule-text nav { padding: 1rem; margin: 1rem 0 1.4rem; background: #f2f6f4; border-radius: 12px; }
+.rule-text nav div { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,15rem),1fr)); gap: .25rem .65rem; }
+.rule-text nav button { border: 0; background: transparent; color: #155d54; padding: .45rem 0; text-align: left; font: inherit; line-height: 1.5; }
+.rule-text nav button:hover { text-decoration: underline; }
+.rule-text h3 { margin: 2rem 0 .75rem; padding-bottom: .45rem; border-bottom: 1px solid #c8dad4; font-size: 1.4rem; }
+.rule-text h4 { margin: 1.4rem 0 .45rem; color: #155d54; font-size: 1.12rem; }
+.rule-text :is(h3,h4) {scroll-margin-top: 5rem;}
+.rule-text dl {display:grid;grid-template-columns: repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:.75rem;background:#f6f7f4;padding:1rem;}
+.rule-text dt {font-size:.85rem;color:#506b6b;}
+.rule-text dd {margin:0;}
