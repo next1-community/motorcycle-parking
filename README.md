@@ -32,4 +32,13 @@
 
 ## 驗證
 
-`node --test engine.test.mjs`。正式開放前仍需確認住戶端防冒用方式、資料保存期限及現場演練；選單與修改碼不代表戶別身分驗證。
+`node --test engine.test.mjs`。正式開放前仍需確認驗證碼個別核發作業、資料保存期限及現場演練。
+
+
+## 2026-11-18 首次登記防冒用修正
+
+首次登記須使用管理中心確認戶別身分後個別核發的驗證碼，成功後沿用為修改碼。管理員於本年度作業點選「核發戶別驗證碼」，只將該碼交付對應住戶，勿放公開群組或網址。資料庫僅存雜湊，公開快照與稽核紀錄不含明碼。既有登記仍使用原修改碼；取消後原碼可重新登記。已登記戶別不可重新核發；尚未登記者重新核發會使舊碼失效。歷史登記的住戶身分仍須另行核對。
+
+現有測試資料庫先套用 `db-registration-authorization.sql`，再發布前端；不要重跑 `db-setup.sql`。升級保留現有資料、管理權限及回應格式，遇到不符的函式版本會回滾。
+
+離線安全回歸：在獨立開發目錄安裝固定版本 `@electric-sql/pglite@0.5.16`（含 pgcrypto），執行 `PGLITE_PACKAGE=/absolute/path/to/node_modules/@electric-sql/pglite node --test security-tests/registration-security.test.mjs`。不需連線正式資料庫，也不把此套件加入網站前端。公開儲存庫沒有私有測試環境 SQL 時，對應的私有來源測試會跳過。
